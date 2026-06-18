@@ -1,30 +1,31 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { ArrowRight, Heart, Sparkles } from "lucide-react";
-import referenceBoard from "@/assets/reference-sticker-board.png.asset.json";
+import { ArrowRight, Play, Sparkles, Star } from "lucide-react";
 import { BrandHeader } from "@/components/BrandHeader";
 import { FloatingParticles } from "@/components/FloatingParticles";
-import { MascotTrio } from "@/components/MascotTrio";
 import { CategoryRail } from "@/components/CategoryRail";
 import { TemplatePreviewModal } from "@/components/TemplatePreviewModal";
-import { StickyMobileCTA } from "@/components/StickyMobileCTA";
+import { MobileBottomNav } from "@/components/MobileBottomNav";
+import { LiveGiftPreview } from "@/components/LiveGiftPreview";
+import { SocialProofBar } from "@/components/SocialProofBar";
+import { Testimonials } from "@/components/Testimonials";
 import { byRail, type Template } from "@/lib/templates";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Krisuu Studio — Cute Sticker Gift Templates" },
+      { title: "Krisuu Studio — Not Just A Gift. A Memory They Keep Forever." },
       {
         name: "description",
         content:
-          "Create scrapbook-style digital gifts covered in cute meme stickers, polaroids, hearts, and internet reaction energy.",
+          "Create interactive love letters, birthday surprises, memory books, relationship stories and emotional digital gifts. Made in minutes. Loved forever.",
       },
-      { property: "og:title", content: "Krisuu Studio" },
+      { property: "og:title", content: "Krisuu Studio — Emotional Digital Gifts" },
       {
         property: "og:description",
         content:
-          "A Pinterest-style board of adorable sticker-filled gift templates for love notes, birthdays, memories, and more.",
+          "A premium gifting studio for love letters, birthdays, memory books and proposals. Built for the people who feel everything.",
       },
     ],
   }),
@@ -35,135 +36,169 @@ function Home() {
   const [active, setActive] = useState<Template | null>(null);
 
   return (
-    <div className="min-h-screen pb-24 sm:pb-0">
+    <div id="top" className="min-h-screen pb-28 sm:pb-0">
       <BrandHeader />
 
-      <section className="relative overflow-hidden px-4 pt-6 sm:px-8 sm:pt-10">
+      {/* ───────── Hero ───────── */}
+      <section className="relative overflow-hidden px-4 pt-8 sm:px-8 sm:pt-14">
         <FloatingParticles />
-        <div className="relative mx-auto max-w-6xl text-center">
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="glass inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs text-foreground/75 shadow-soft"
-          >
-            <Sparkles size={12} className="text-love" />
-            pinterest-board energy
-            <Heart size={12} className="text-love" fill="currentColor" />
-          </motion.div>
-
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="mt-5 text-[2.8rem] font-semibold leading-[0.98] sm:text-7xl"
-          >
-            Sticker-packed gifts
-            <br />
-            <span className="font-script text-love" style={{ fontFamily: "var(--font-script)" }}>
-              for dramatic little feelings.
-            </span>
-          </motion.h1>
-
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.24 }}
-            className="mx-auto mt-4 max-w-2xl text-sm text-muted-foreground sm:text-base"
-          >
-            Real meme-sticker energy — crying cats, rose cats, kiss cats, sleepy kittens, doodle hearts,
-            and scrapbook layers all over every template.
-          </motion.p>
-
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-            className="mt-6 flex flex-wrap items-center justify-center gap-3"
-          >
-            <a
-              href="#trending"
-              className="group inline-flex items-center gap-2 rounded-full bg-foreground px-6 py-3.5 text-sm font-medium text-background shadow-plush transition hover:scale-[1.03]"
+        <div className="relative mx-auto grid max-w-6xl items-center gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-14">
+          <div className="text-center lg:text-left">
+            <motion.div
+              initial={{ opacity: 0, y: -8 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="glass inline-flex items-center gap-2 rounded-full px-3 py-1 text-[11px] text-foreground/75 shadow-soft"
             >
-              Browse sticker gifts
-              <ArrowRight size={16} className="transition group-hover:translate-x-0.5" />
-            </a>
-            <a
-              href="#collections"
-              className="inline-flex items-center gap-2 rounded-full border border-border bg-card/85 px-6 py-3.5 text-sm font-medium text-foreground backdrop-blur hover:bg-card"
-            >
-              Explore boards
-            </a>
-          </motion.div>
+              <span className="flex items-center gap-0.5 text-love">
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <Star key={i} size={9} fill="currentColor" />
+                ))}
+              </span>
+              4.9 · loved by 10,000+ gifters
+            </motion.div>
 
-          <div className="mt-10 grid items-start gap-8 lg:grid-cols-[1.2fr_0.95fr] lg:text-left">
-            <div>
-              <MascotTrio />
-            </div>
+            <motion.h1
+              initial={{ opacity: 0, y: 18 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.08 }}
+              className="mt-5 text-[2.5rem] font-semibold leading-[1.02] sm:text-6xl lg:text-[4.2rem]"
+              style={{ fontFamily: "var(--font-display)" }}
+            >
+              Not Just A Gift.
+              <br />
+              <span className="text-love">A Memory</span>{" "}
+              <span className="font-script text-foreground/85" style={{ fontFamily: "var(--font-script)" }}>
+                they keep forever.
+              </span>
+            </motion.h1>
+
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.22 }}
+              className="mx-auto mt-5 max-w-xl text-[15px] leading-relaxed text-muted-foreground sm:text-base lg:mx-0"
+            >
+              Create interactive love letters, birthday surprises, memory books, relationship stories
+              and emotional digital gifts — in minutes, opened forever.
+            </motion.p>
 
             <motion.div
-              initial={{ opacity: 0, x: 24 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.25 }}
-              className="mx-auto w-full max-w-[420px] rotate-[2deg]"
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.35 }}
+              className="mt-7 flex flex-wrap items-center justify-center gap-3 lg:justify-start"
             >
-              <div className="polaroid relative overflow-hidden p-3 pb-5">
-                <span className="washi-tape absolute left-8 top-1 z-10 -rotate-6" />
-                <span className="washi-tape absolute right-6 top-2 z-10 rotate-[10deg]" />
-                <img
-                  src={referenceBoard.url}
-                  alt="Pinterest board full of cute cat internet stickers used as visual reference"
-                  loading="lazy"
-                  className="aspect-[4/5] w-full rounded-md object-cover object-left-top"
-                />
-                <div className="mt-3 px-1 text-left">
-                  <p className="font-hand text-2xl text-foreground">the exact sticker mood</p>
-                  <p className="text-xs text-muted-foreground">messy, saved, layered, cute internet chaos</p>
-                </div>
-              </div>
+              <a
+                id="create"
+                href="#trending"
+                className="group inline-flex items-center gap-2 rounded-full bg-love px-7 py-3.5 text-sm font-medium text-primary-foreground shadow-plush transition hover:scale-[1.03]"
+              >
+                <Sparkles size={15} /> Create Gift
+                <ArrowRight size={15} className="transition group-hover:translate-x-0.5" />
+              </a>
+              <a
+                href="#demo"
+                className="inline-flex items-center gap-2 rounded-full border border-border bg-card/85 px-6 py-3.5 text-sm font-medium text-foreground backdrop-blur hover:bg-card"
+              >
+                <Play size={13} fill="currentColor" /> Watch Demo
+              </a>
             </motion.div>
+
+            <p className="mt-4 font-hand text-lg text-foreground/55 lg:text-left">
+              some gifts are opened once. this one gets revisited forever.
+            </p>
           </div>
 
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.8 }}
-            className="mt-4 font-hand text-xl text-foreground/65"
+          {/* live preview */}
+          <motion.div
+            id="demo"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2, duration: 0.6 }}
           >
-            saved from the cutest corner of the internet ✿
-          </motion.p>
+            <LiveGiftPreview />
+          </motion.div>
         </div>
       </section>
 
-      <div id="trending" />
-      <CategoryRail kicker="most saved" title="Trending Sticker Gifts" items={byRail("trending")} onOpen={setActive} />
-      <div id="collections" />
-      <CategoryRail kicker="soft launch" title="Most Loved" items={byRail("loved")} onOpen={setActive} />
-      <CategoryRail kicker="fresh drop" title="New Arrivals" items={byRail("new")} onOpen={setActive} />
-      <CategoryRail kicker="party board" title="Birthday Collection" items={byRail("birthday")} onOpen={setActive} />
-      <CategoryRail kicker="kissy board" title="Love Collection" items={byRail("love")} onOpen={setActive} />
-      <CategoryRail kicker="scrapbook board" title="Memory Collection" items={byRail("memory")} onOpen={setActive} />
+      <div className="mt-12 sm:mt-16">
+        <SocialProofBar />
+      </div>
 
-      <section id="stories" className="px-4 py-16 text-center sm:px-8">
-        <p className="font-hand text-2xl text-foreground/65">too cute to leave unsent</p>
-        <h2 className="mt-1 text-2xl font-semibold sm:text-3xl">Pick a board. Send a feeling.</h2>
-        <p className="mx-auto mt-2 max-w-lg text-sm text-muted-foreground">
-          Every template is layered with different meme stickers so the whole site feels collected,
-          saved, and obsessively curated.
-        </p>
-        <a
-          href="#trending"
-          className="mt-6 inline-flex items-center gap-2 rounded-full bg-love px-6 py-3 text-sm font-medium text-primary-foreground shadow-plush"
+      {/* ───────── Rails ───────── */}
+      <div id="trending" />
+      <CategoryRail kicker="going viral" title="Trending Gifts" items={byRail("trending")} onOpen={setActive} />
+
+      <div id="shared" />
+      <CategoryRail kicker="sent the most" title="Most Shared" items={byRail("shared")} onOpen={setActive} />
+
+      <div id="relationship" />
+      <CategoryRail kicker="for the two of you" title="Relationship Gifts" items={byRail("relationship")} onOpen={setActive} />
+
+      <div id="birthday" />
+      <CategoryRail kicker="confetti incoming" title="Birthday Gifts" items={byRail("birthday")} onOpen={setActive} />
+
+      <div id="memory" />
+      <CategoryRail kicker="pages that turn back time" title="Memory Books" items={byRail("memory")} onOpen={setActive} />
+
+      {/* ───────── Storytelling band ───────── */}
+      <section className="relative my-10 overflow-hidden px-4 py-16 sm:px-8 sm:py-24">
+        <div
+          className="absolute inset-x-4 inset-y-4 -z-10 rounded-[2.5rem]"
+          style={{
+            background:
+              "radial-gradient(60% 80% at 20% 20%, var(--love-soft), transparent 60%), radial-gradient(60% 80% at 80% 80%, var(--proposal-soft), transparent 60%), var(--card)",
+          }}
+        />
+        <div className="mx-auto max-w-3xl text-center">
+          <p className="font-hand text-2xl text-foreground/65">why people keep coming back</p>
+          <h2
+            className="mt-1 text-3xl font-semibold leading-tight sm:text-5xl"
+            style={{ fontFamily: "var(--font-display)" }}
+          >
+            Because screenshots fade.
+            <br />
+            <span className="text-love">Stories don't.</span>
+          </h2>
+          <p className="mx-auto mt-4 max-w-xl text-sm text-muted-foreground sm:text-base">
+            Every Krisuu gift is a tiny film — typed letters, soft music, photo reveals, a final
+            surprise. Made by you, replayed by them, forever.
+          </p>
+          <a
+            href="#trending"
+            className="mt-7 inline-flex items-center gap-2 rounded-full bg-foreground px-6 py-3 text-sm font-medium text-background shadow-plush hover:opacity-90"
+          >
+            Turn a memory into an experience <ArrowRight size={14} />
+          </a>
+        </div>
+      </section>
+
+      {/* ───────── Reactions ───────── */}
+      <div id="reactions" />
+      <Testimonials />
+
+      {/* ───────── Final CTA ───────── */}
+      <section id="stories" className="px-4 pb-20 pt-4 text-center sm:px-8">
+        <p className="font-hand text-2xl text-foreground/65">your turn ✿</p>
+        <h2
+          className="mt-1 text-2xl font-semibold sm:text-4xl"
+          style={{ fontFamily: "var(--font-display)" }}
         >
-          Start picking stickers <ArrowRight size={14} />
+          Make something they'll never delete.
+        </h2>
+        <a
+          href="#create"
+          className="mt-6 inline-flex items-center gap-2 rounded-full bg-love px-7 py-3.5 text-sm font-medium text-primary-foreground shadow-plush"
+        >
+          <Sparkles size={14} /> Start Creating
         </a>
         <p className="mt-12 text-xs text-muted-foreground">
-          © {new Date().getFullYear()} Krisuu Studio · sticker chaos, but cute
+          © {new Date().getFullYear()} Krisuu Studio · made with feelings
         </p>
       </section>
 
-      <StickyMobileCTA />
+      <MobileBottomNav />
       <TemplatePreviewModal template={active} onClose={() => setActive(null)} />
     </div>
   );
 }
-
