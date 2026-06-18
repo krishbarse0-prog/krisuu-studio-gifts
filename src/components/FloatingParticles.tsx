@@ -1,35 +1,24 @@
 import { motion } from "framer-motion";
-import { Heart, Sparkles, Star } from "lucide-react";
 import { STICKERS } from "@/lib/stickers";
 
-const doodles = [
-  { Icon: Heart, color: "text-love", left: "8%", top: "18%", size: 22, delay: 0 },
-  { Icon: Sparkles, color: "text-birthday", left: "18%", top: "62%", size: 18, delay: 0.4 },
-  { Icon: Star, color: "text-proposal", left: "78%", top: "22%", size: 20, delay: 0.8 },
-  { Icon: Heart, color: "text-love", left: "88%", top: "70%", size: 16, delay: 1.2 },
-  { Icon: Sparkles, color: "text-friendship", left: "45%", top: "10%", size: 14, delay: 0.6 },
-  { Icon: Star, color: "text-memory", left: "60%", top: "78%", size: 18, delay: 1 },
-  { Icon: Heart, color: "text-proposal", left: "30%", top: "30%", size: 12, delay: 1.4 },
-  { Icon: Sparkles, color: "text-love", left: "70%", top: "48%", size: 16, delay: 0.2 },
-];
-
-// Faint floating cat stickers in the background
-const bgStickers: { url: string; left: string; top: string; size: number; rotate: number; delay: number }[] = [
-  { url: STICKERS.hearts, left: "4%", top: "8%", size: 84, rotate: -12, delay: 0 },
-  { url: STICKERS.love, left: "90%", top: "12%", size: 70, rotate: 14, delay: 0.7 },
-  { url: STICKERS.bunny, left: "82%", top: "78%", size: 64, rotate: -8, delay: 1.4 },
-  { url: STICKERS.shy, left: "6%", top: "72%", size: 76, rotate: 10, delay: 2 },
-  { url: STICKERS.sleepy, left: "50%", top: "92%", size: 60, rotate: -6, delay: 1 },
+const bgStickers: { key: keyof typeof STICKERS; left: string; top: string; size: number; rotate: number; delay: number; opacity: number }[] = [
+  { key: "heartEyesCat", left: "2%", top: "9%", size: 76, rotate: -10, delay: 0, opacity: 0.16 },
+  { key: "roseKitten", left: "86%", top: "8%", size: 82, rotate: 10, delay: 0.8, opacity: 0.15 },
+  { key: "bunnyFlower", left: "7%", top: "70%", size: 72, rotate: -8, delay: 1.3, opacity: 0.14 },
+  { key: "sleepyCat", left: "88%", top: "72%", size: 78, rotate: 8, delay: 1.9, opacity: 0.16 },
+  { key: "hamster", left: "45%", top: "84%", size: 60, rotate: -4, delay: 1.1, opacity: 0.12 },
+  { key: "heartsTrio", left: "26%", top: "22%", size: 56, rotate: -6, delay: 0.5, opacity: 0.18 },
+  { key: "sparkleSticker", left: "67%", top: "18%", size: 42, rotate: 10, delay: 1.6, opacity: 0.2 },
+  { key: "flowerDoodle", left: "74%", top: "56%", size: 52, rotate: 10, delay: 2.1, opacity: 0.17 },
 ];
 
 export function FloatingParticles() {
   return (
     <div className="pointer-events-none absolute inset-0 overflow-hidden">
-      {/* faint floating cat stickers */}
       {bgStickers.map((s, i) => (
         <motion.img
           key={`s${i}`}
-          src={s.url}
+          src={STICKERS[s.key]}
           alt=""
           aria-hidden
           className="absolute select-none"
@@ -38,60 +27,31 @@ export function FloatingParticles() {
             top: s.top,
             width: s.size,
             height: "auto",
-            opacity: 0.18,
-            filter: "drop-shadow(0 6px 10px rgba(0,0,0,0.08))",
+            opacity: s.opacity,
+            filter: "drop-shadow(0 8px 18px rgba(0,0,0,0.08))",
           }}
-          initial={{ rotate: s.rotate, scale: 0.8 }}
+          initial={{ rotate: s.rotate, scale: 0.9 }}
           animate={{
-            y: [0, -18, 0],
-            x: [0, i % 2 ? 12 : -12, 0],
-            rotate: [s.rotate - 4, s.rotate + 4, s.rotate - 4],
+            y: [0, -16, 0],
+            x: [0, i % 2 ? 10 : -10, 0],
+            rotate: [s.rotate - 3, s.rotate + 3, s.rotate - 3],
           }}
           transition={{ duration: 9 + i, repeat: Infinity, ease: "easeInOut", delay: s.delay }}
         />
       ))}
 
-      {/* doodle hearts / sparkles */}
-      {doodles.map(({ Icon, color, left, top, size, delay }, i) => (
-        <motion.div
-          key={i}
-          className={`absolute ${color}`}
-          style={{ left, top }}
-          initial={{ y: 0, opacity: 0 }}
-          animate={{
-            y: [0, -22, 0],
-            x: [0, i % 2 ? 10 : -10, 0],
-            rotate: [0, 12, -8, 0],
-            opacity: [0.35, 0.85, 0.35],
-          }}
-          transition={{ duration: 6 + (i % 3), delay, repeat: Infinity, ease: "easeInOut" }}
-        >
-          <Icon size={size} fill="currentColor" strokeWidth={1.2} />
-        </motion.div>
-      ))}
-
-      {/* sakura petals */}
-      {Array.from({ length: 10 }).map((_, i) => (
+      {Array.from({ length: 12 }).map((_, i) => (
         <motion.span
-          key={`p${i}`}
-          className="absolute h-2.5 w-3 rounded-[60%_40%_55%_45%/55%_60%_40%_45%]"
+          key={`dot${i}`}
+          className="absolute rounded-full bg-love/35"
           style={{
-            left: `${(i * 11 + 5) % 95}%`,
-            top: `-20px`,
-            background:
-              i % 2 ? "oklch(0.9 0.06 15 / 80%)" : "oklch(0.92 0.05 305 / 75%)",
+            width: i % 3 === 0 ? 8 : 5,
+            height: i % 3 === 0 ? 8 : 5,
+            left: `${(i * 9 + 6) % 95}%`,
+            top: `${(i * 13 + 8) % 88}%`,
           }}
-          animate={{
-            y: ["0vh", "110vh"],
-            x: [0, 30, -20, 10],
-            rotate: [0, 180, 360],
-          }}
-          transition={{
-            duration: 14 + (i % 5) * 2,
-            delay: i * 1.3,
-            repeat: Infinity,
-            ease: "linear",
-          }}
+          animate={{ y: [0, -12, 0], opacity: [0.15, 0.45, 0.15] }}
+          transition={{ duration: 5 + (i % 4), repeat: Infinity, delay: i * 0.35 }}
         />
       ))}
     </div>
