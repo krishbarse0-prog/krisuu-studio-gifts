@@ -21,9 +21,9 @@ export function CategoryRail({
         </div>
         <a href="#" className="text-xs text-muted-foreground hover:text-foreground">see all →</a>
       </div>
-      <div className="no-scrollbar flex snap-x snap-mandatory gap-5 overflow-x-auto px-4 pb-8 pt-4 sm:gap-7 sm:px-8">
+      <div className="no-scrollbar flex snap-x snap-mandatory gap-10 overflow-x-auto px-8 pb-16 pt-10 sm:gap-14 sm:px-12">
         {items.map((t, i) => (
-          <div key={t.id} className="snap-start">
+          <div key={t.id} className="snap-start pl-2 pr-2">
             <PolaroidCard template={t} onOpen={onOpen} index={i} />
           </div>
         ))}
