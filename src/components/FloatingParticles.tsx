@@ -1,7 +1,8 @@
 import { motion } from "framer-motion";
 import { Heart, Sparkles, Star } from "lucide-react";
+import { STICKERS } from "@/lib/stickers";
 
-const items = [
+const doodles = [
   { Icon: Heart, color: "text-love", left: "8%", top: "18%", size: 22, delay: 0 },
   { Icon: Sparkles, color: "text-birthday", left: "18%", top: "62%", size: 18, delay: 0.4 },
   { Icon: Star, color: "text-proposal", left: "78%", top: "22%", size: 20, delay: 0.8 },
@@ -12,10 +13,46 @@ const items = [
   { Icon: Sparkles, color: "text-love", left: "70%", top: "48%", size: 16, delay: 0.2 },
 ];
 
+// Faint floating cat stickers in the background
+const bgStickers: { url: string; left: string; top: string; size: number; rotate: number; delay: number }[] = [
+  { url: STICKERS.hearts, left: "4%", top: "8%", size: 84, rotate: -12, delay: 0 },
+  { url: STICKERS.love, left: "90%", top: "12%", size: 70, rotate: 14, delay: 0.7 },
+  { url: STICKERS.bunny, left: "82%", top: "78%", size: 64, rotate: -8, delay: 1.4 },
+  { url: STICKERS.shy, left: "6%", top: "72%", size: 76, rotate: 10, delay: 2 },
+  { url: STICKERS.sleepy, left: "50%", top: "92%", size: 60, rotate: -6, delay: 1 },
+];
+
 export function FloatingParticles() {
   return (
     <div className="pointer-events-none absolute inset-0 overflow-hidden">
-      {items.map(({ Icon, color, left, top, size, delay }, i) => (
+      {/* faint floating cat stickers */}
+      {bgStickers.map((s, i) => (
+        <motion.img
+          key={`s${i}`}
+          src={s.url}
+          alt=""
+          aria-hidden
+          className="absolute select-none"
+          style={{
+            left: s.left,
+            top: s.top,
+            width: s.size,
+            height: "auto",
+            opacity: 0.18,
+            filter: "drop-shadow(0 6px 10px rgba(0,0,0,0.08))",
+          }}
+          initial={{ rotate: s.rotate, scale: 0.8 }}
+          animate={{
+            y: [0, -18, 0],
+            x: [0, i % 2 ? 12 : -12, 0],
+            rotate: [s.rotate - 4, s.rotate + 4, s.rotate - 4],
+          }}
+          transition={{ duration: 9 + i, repeat: Infinity, ease: "easeInOut", delay: s.delay }}
+        />
+      ))}
+
+      {/* doodle hearts / sparkles */}
+      {doodles.map(({ Icon, color, left, top, size, delay }, i) => (
         <motion.div
           key={i}
           className={`absolute ${color}`}
@@ -25,13 +62,14 @@ export function FloatingParticles() {
             y: [0, -22, 0],
             x: [0, i % 2 ? 10 : -10, 0],
             rotate: [0, 12, -8, 0],
-            opacity: [0.4, 0.95, 0.4],
+            opacity: [0.35, 0.85, 0.35],
           }}
           transition={{ duration: 6 + (i % 3), delay, repeat: Infinity, ease: "easeInOut" }}
         >
           <Icon size={size} fill="currentColor" strokeWidth={1.2} />
         </motion.div>
       ))}
+
       {/* sakura petals */}
       {Array.from({ length: 10 }).map((_, i) => (
         <motion.span
@@ -41,9 +79,7 @@ export function FloatingParticles() {
             left: `${(i * 11 + 5) % 95}%`,
             top: `-20px`,
             background:
-              i % 2
-                ? "oklch(0.9 0.06 15 / 80%)"
-                : "oklch(0.92 0.05 305 / 75%)",
+              i % 2 ? "oklch(0.9 0.06 15 / 80%)" : "oklch(0.92 0.05 305 / 75%)",
           }}
           animate={{
             y: ["0vh", "110vh"],

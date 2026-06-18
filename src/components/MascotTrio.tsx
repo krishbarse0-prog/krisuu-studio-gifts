@@ -1,44 +1,69 @@
 import { motion } from "framer-motion";
-import kiri from "@/assets/kiri-cat.png";
-import mochi from "@/assets/mochi-bunny.png";
-import kuma from "@/assets/kuma-bear.png";
+import { Sticker } from "./Sticker";
+import type { StickerKey } from "@/lib/stickers";
 
-const mascots = [
-  { src: kiri, name: "Kiri", tag: "the love letter keeper", rot: -8, delay: 0 },
-  { src: kuma, name: "Kuma", tag: "the memory holder", rot: 0, delay: 0.15 },
-  { src: mochi, name: "Mochi", tag: "the birthday dreamer", rot: 9, delay: 0.3 },
+type StickerSpot = {
+  key: StickerKey;
+  size: number;
+  rotate: number;
+  x: number; // % offset from center
+  y: number;
+  delay: number;
+  z: number;
+};
+
+const spots: StickerSpot[] = [
+  { key: "rose", size: 170, rotate: -14, x: -34, y: 2, delay: 0, z: 3 },
+  { key: "hug", size: 200, rotate: 4, x: 0, y: -4, delay: 0.15, z: 4 },
+  { key: "party", size: 160, rotate: 12, x: 34, y: 4, delay: 0.3, z: 3 },
+  { key: "bunny", size: 90, rotate: -10, x: -56, y: 38, delay: 0.5, z: 2 },
+  { key: "love", size: 110, rotate: 10, x: 54, y: 36, delay: 0.6, z: 2 },
+  { key: "hearts", size: 80, rotate: -6, x: -18, y: -42, delay: 0.7, z: 5 },
+  { key: "shy", size: 88, rotate: 14, x: 22, y: -40, delay: 0.8, z: 5 },
 ];
 
 export function MascotTrio() {
   return (
-    <div className="relative flex items-end justify-center gap-2 sm:gap-6">
-      {mascots.map((m, i) => (
+    <div className="relative mx-auto h-[300px] w-full max-w-2xl sm:h-[360px]">
+      {/* washi tape decorations */}
+      <span className="washi-tape absolute left-[18%] top-2 -rotate-6 z-[10]" />
+      <span
+        className="washi-tape absolute right-[14%] top-6 rotate-12 z-[10] hidden sm:block"
+        style={{
+          background:
+            "repeating-linear-gradient(45deg, var(--washi-mint) 0 8px, oklch(0.95 0.04 165 / 70%) 8px 16px)",
+        }}
+      />
+
+      {spots.map((s, i) => (
         <motion.div
-          key={m.name}
-          initial={{ y: 40, opacity: 0, rotate: m.rot }}
-          animate={{ y: 0, opacity: 1, rotate: m.rot }}
-          transition={{ delay: m.delay + 0.2, type: "spring", stiffness: 90, damping: 12 }}
-          whileHover={{ y: -10, rotate: m.rot + (i % 2 ? 4 : -4) }}
-          className="relative"
+          key={i}
+          className="absolute left-1/2 top-1/2"
+          style={{ zIndex: s.z }}
+          initial={{ opacity: 0, scale: 0.6, x: "-50%", y: "-50%" }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: s.delay, type: "spring", stiffness: 120, damping: 14 }}
         >
-          <motion.div
-            animate={{ y: [0, -10, 0] }}
-            transition={{ duration: 4 + i, repeat: Infinity, ease: "easeInOut", delay: i * 0.3 }}
-            className={i === 1 ? "w-32 sm:w-44" : "w-24 sm:w-32"}
+          <div
+            style={{
+              transform: `translate(${s.x * 1}%, ${s.y * 1}%) translate(-50%, -50%)`,
+            }}
           >
-            <img
-              src={m.src}
-              alt={m.name}
-              className="h-auto w-full drop-shadow-[0_18px_24px_rgba(255,122,162,0.25)]"
-              draggable={false}
+            <Sticker
+              sticker={s.key}
+              size={s.size}
+              rotate={s.rotate}
+              driftDelay={i * 0.2}
             />
-          </motion.div>
-          <div className="mt-1 text-center">
-            <p className="font-script text-base text-love sm:text-lg">{m.name}</p>
-            <p className="hidden text-[10px] uppercase tracking-[0.18em] text-muted-foreground sm:block">{m.tag}</p>
           </div>
         </motion.div>
       ))}
+
+      {/* doodle hearts/stars */}
+      <span className="absolute left-[10%] top-[14%] font-script text-3xl text-love/60 rotate-[-12deg]">♡</span>
+      <span className="absolute right-[8%] top-[24%] font-script text-2xl text-proposal/60 rotate-[10deg]">✦</span>
+      <span className="absolute left-[18%] bottom-[6%] font-script text-2xl text-birthday/70">✿</span>
+      <span className="absolute right-[16%] bottom-[10%] font-script text-3xl text-friendship/60 rotate-[8deg]">★</span>
     </div>
   );
 }
