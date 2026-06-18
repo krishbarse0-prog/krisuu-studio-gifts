@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import { motion } from "framer-motion";
 import { STICKERS, type StickerKey } from "@/lib/stickers";
 
@@ -6,7 +7,7 @@ type Props = {
   size?: number;
   rotate?: number;
   className?: string;
-  style?: React.CSSProperties;
+  style?: CSSProperties;
   driftDelay?: number;
   interactive?: boolean;
 };
