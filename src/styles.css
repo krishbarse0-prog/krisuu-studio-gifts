@@ -4,11 +4,6 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* =========================================================
-   KRISUU STUDIO — Kawaii Emotional Gifting Design System
-   Inspired by Sanrio, Pinterest scrapbook, Japanese kawaii.
-   ========================================================= */
-
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -16,7 +11,6 @@
   --radius-xl: calc(var(--radius) + 6px);
   --radius-2xl: calc(var(--radius) + 14px);
   --radius-3xl: calc(var(--radius) + 22px);
-  --radius-blob: 42% 58% 63% 37% / 41% 44% 56% 59%;
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -39,7 +33,6 @@
   --color-ring: var(--ring);
   --color-ring-offset-background: var(--background);
 
-  /* Brand category tokens */
   --color-love: var(--love);
   --color-love-soft: var(--love-soft);
   --color-birthday: var(--birthday);
@@ -61,21 +54,19 @@
 }
 
 :root {
-  --radius: 1.25rem;
+  --radius: 1.05rem;
 
-  /* Surfaces */
-  --background: oklch(0.985 0.012 60);        /* #FFF8F4 cream */
-  --foreground: oklch(0.26 0.02 25);          /* #2F2A2A */
-  --card: oklch(0.992 0.006 70);              /* #FFFDFB */
-  --card-foreground: oklch(0.26 0.02 25);
-  --popover: oklch(0.992 0.006 70);
-  --popover-foreground: oklch(0.26 0.02 25);
-  --cream: oklch(0.985 0.012 60);
+  --background: oklch(0.984 0.01 60);
+  --foreground: oklch(0.27 0.02 25);
+  --card: oklch(0.995 0.003 70);
+  --card-foreground: oklch(0.27 0.02 25);
+  --popover: oklch(0.995 0.003 70);
+  --popover-foreground: oklch(0.27 0.02 25);
+  --cream: oklch(0.984 0.01 60);
 
-  /* Brand */
-  --primary: oklch(0.74 0.16 12);             /* love pink ~ #FF7AA2 */
+  --primary: oklch(0.74 0.16 12);
   --primary-foreground: oklch(0.99 0.005 90);
-  --secondary: oklch(0.95 0.025 35);          /* peachy */
+  --secondary: oklch(0.95 0.025 35);
   --secondary-foreground: oklch(0.3 0.03 25);
   --muted: oklch(0.955 0.012 60);
   --muted-foreground: oklch(0.5 0.02 30);
@@ -83,33 +74,27 @@
   --accent-foreground: oklch(0.3 0.03 25);
   --destructive: oklch(0.62 0.22 22);
   --destructive-foreground: oklch(0.99 0.005 90);
-  --border: oklch(0.93 0.02 40 / 70%);
+  --border: oklch(0.92 0.012 40 / 78%);
   --input: oklch(0.93 0.02 40);
   --ring: oklch(0.78 0.14 10);
 
-  /* Category palette */
-  --love: oklch(0.74 0.16 12);                /* #FF7AA2 */
+  --love: oklch(0.74 0.16 12);
   --love-soft: oklch(0.94 0.05 12);
-  --birthday: oklch(0.82 0.14 65);            /* #FFB86B */
+  --birthday: oklch(0.82 0.14 65);
   --birthday-soft: oklch(0.95 0.045 65);
-  --friendship: oklch(0.82 0.10 240);         /* #8BCFFF */
+  --friendship: oklch(0.82 0.1 240);
   --friendship-soft: oklch(0.95 0.035 240);
-  --memory: oklch(0.86 0.10 165);             /* #8DE5C1 */
+  --memory: oklch(0.86 0.1 165);
   --memory-soft: oklch(0.96 0.035 165);
-  --proposal: oklch(0.78 0.10 305);           /* #C8A5FF */
+  --proposal: oklch(0.78 0.1 305);
   --proposal-soft: oklch(0.95 0.035 305);
 
-  /* Washi tape */
   --washi-pink: oklch(0.88 0.08 15 / 75%);
   --washi-mint: oklch(0.9 0.08 165 / 75%);
 
-  /* Shadows + glow */
-  --shadow-soft: 0 6px 24px -8px oklch(0.7 0.12 20 / 18%),
-                 0 2px 6px -2px oklch(0.7 0.12 20 / 12%);
-  --shadow-plush: 0 18px 40px -16px oklch(0.7 0.14 15 / 30%),
-                  0 4px 10px -4px oklch(0.7 0.14 15 / 18%);
-  --shadow-polaroid: 0 14px 30px -14px oklch(0.4 0.05 30 / 28%),
-                     0 3px 8px -2px oklch(0.4 0.05 30 / 16%);
+  --shadow-soft: 0 10px 28px -12px oklch(0.44 0.03 30 / 18%), 0 3px 10px -4px oklch(0.44 0.03 30 / 12%);
+  --shadow-plush: 0 18px 45px -18px oklch(0.62 0.08 15 / 28%), 0 6px 12px -6px oklch(0.62 0.08 15 / 18%);
+  --shadow-polaroid: 0 20px 34px -18px oklch(0.35 0.02 30 / 25%), 0 3px 10px -4px oklch(0.35 0.02 30 / 16%);
   --glow-love: 0 0 40px oklch(0.78 0.18 12 / 35%);
 }
 
@@ -134,30 +119,66 @@
 }
 
 @layer base {
-  * { border-color: var(--color-border); }
-  html, body { background-color: var(--color-background); color: var(--color-foreground); }
+  * {
+    border-color: var(--color-border);
+  }
+
+  html,
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+  }
+
   body {
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
     background-image:
-      radial-gradient(circle at 12% 8%, oklch(0.94 0.05 12 / 55%) 0, transparent 38%),
-      radial-gradient(circle at 88% 14%, oklch(0.93 0.05 65 / 50%) 0, transparent 42%),
-      radial-gradient(circle at 50% 92%, oklch(0.93 0.05 305 / 45%) 0, transparent 45%);
+      radial-gradient(circle at 10% 12%, oklch(0.96 0.04 12 / 45%) 0, transparent 34%),
+      radial-gradient(circle at 87% 13%, oklch(0.96 0.04 70 / 42%) 0, transparent 32%),
+      linear-gradient(rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0.55)),
+      linear-gradient(90deg, rgba(248, 211, 220, 0.28) 1px, transparent 1px),
+      linear-gradient(rgba(248, 211, 220, 0.28) 1px, transparent 1px);
+    background-size: auto, auto, auto, 28px 28px, 28px 28px;
     background-attachment: fixed;
   }
-  h1,h2,h3,h4 { font-family: var(--font-display); letter-spacing: -0.01em; }
-  .font-script { font-family: var(--font-script); }
-  .font-hand { font-family: var(--font-hand); }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    letter-spacing: 0;
+  }
+
+  .font-script {
+    font-family: var(--font-script);
+  }
+
+  .font-hand {
+    font-family: var(--font-hand);
+  }
 }
 
-@utility shadow-soft { box-shadow: var(--shadow-soft); }
-@utility shadow-plush { box-shadow: var(--shadow-plush); }
-@utility shadow-polaroid { box-shadow: var(--shadow-polaroid); }
-@utility glow-love { box-shadow: var(--glow-love); }
+@utility shadow-soft {
+  box-shadow: var(--shadow-soft);
+}
+
+@utility shadow-plush {
+  box-shadow: var(--shadow-plush);
+}
+
+@utility shadow-polaroid {
+  box-shadow: var(--shadow-polaroid);
+}
+
+@utility glow-love {
+  box-shadow: var(--glow-love);
+}
 
 @utility polaroid {
-  background: var(--card);
-  border-radius: 12px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(255, 253, 251, 1));
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  border-radius: 10px;
   padding: 14px 14px 56px;
   box-shadow: var(--shadow-polaroid);
 }
@@ -166,43 +187,50 @@
   position: absolute;
   height: 22px;
   width: 90px;
-  background: repeating-linear-gradient(45deg,
-    var(--washi-pink) 0 8px,
-    oklch(0.95 0.04 15 / 70%) 8px 16px);
+  background: repeating-linear-gradient(45deg, var(--washi-pink) 0 8px, oklch(0.95 0.04 15 / 70%) 8px 16px);
   border-radius: 2px;
   box-shadow: 0 2px 6px oklch(0 0 0 / 10%);
 }
 
 @utility glass {
-  background: oklch(1 0 0 / 65%);
-  backdrop-filter: blur(18px) saturate(140%);
+  background: oklch(1 0 0 / 68%);
+  backdrop-filter: blur(18px) saturate(135%);
   border: 1px solid oklch(1 0 0 / 60%);
 }
 
 @utility no-scrollbar {
-  &::-webkit-scrollbar { display: none; }
+  &::-webkit-scrollbar {
+    display: none;
+  }
   scrollbar-width: none;
 }
 
-/* Floating animations */
-@keyframes float-y {
-  0%,100% { transform: translateY(0) rotate(var(--r,0deg)); }
-  50% { transform: translateY(-16px) rotate(var(--r,0deg)); }
-}
-@keyframes drift {
-  0% { transform: translate(0,0) rotate(0); }
-  50% { transform: translate(8px,-12px) rotate(8deg); }
-  100% { transform: translate(0,0) rotate(0); }
-}
 @keyframes sparkle {
-  0%,100% { opacity: 0.3; transform: scale(0.9); }
-  50% { opacity: 1; transform: scale(1.15); }
+  0%,
+  100% {
+    opacity: 0.3;
+    transform: scale(0.9);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.15);
+  }
 }
+
 @keyframes wiggle {
-  0%,100% { transform: rotate(-3deg); }
-  50% { transform: rotate(3deg); }
+  0%,
+  100% {
+    transform: rotate(-3deg);
+  }
+  50% {
+    transform: rotate(3deg);
+  }
 }
-.animate-float { animation: float-y 6s ease-in-out infinite; }
-.animate-drift { animation: drift 9s ease-in-out infinite; }
-.animate-sparkle { animation: sparkle 2.6s ease-in-out infinite; }
-.animate-wiggle { animation: wiggle 1.6s ease-in-out infinite; }
+
+.animate-sparkle {
+  animation: sparkle 2.6s ease-in-out infinite;
+}
+
+.animate-wiggle {
+  animation: wiggle 1.6s ease-in-out infinite;
+}
