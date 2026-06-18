@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { ArrowRight, Heart, Sparkles } from "lucide-react";
+import referenceBoard from "@/assets/reference-sticker-board.png.asset.json";
 import { BrandHeader } from "@/components/BrandHeader";
 import { FloatingParticles } from "@/components/FloatingParticles";
 import { MascotTrio } from "@/components/MascotTrio";
@@ -94,8 +95,32 @@ function Home() {
             </a>
           </motion.div>
 
-          <div className="mt-10 sm:mt-14">
-            <MascotTrio />
+          <div className="mt-10 grid items-start gap-8 lg:grid-cols-[1.2fr_0.95fr] lg:text-left">
+            <div>
+              <MascotTrio />
+            </div>
+
+            <motion.div
+              initial={{ opacity: 0, x: 24 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.25 }}
+              className="mx-auto w-full max-w-[420px] rotate-[2deg]"
+            >
+              <div className="polaroid relative overflow-hidden p-3 pb-5">
+                <span className="washi-tape absolute left-8 top-1 z-10 -rotate-6" />
+                <span className="washi-tape absolute right-6 top-2 z-10 rotate-[10deg]" />
+                <img
+                  src={referenceBoard.url}
+                  alt="Pinterest board full of cute cat internet stickers used as visual reference"
+                  loading="lazy"
+                  className="aspect-[4/5] w-full rounded-md object-cover object-left-top"
+                />
+                <div className="mt-3 px-1 text-left">
+                  <p className="font-hand text-2xl text-foreground">the exact sticker mood</p>
+                  <p className="text-xs text-muted-foreground">messy, saved, layered, cute internet chaos</p>
+                </div>
+              </div>
+            </motion.div>
           </div>
 
           <motion.p
@@ -141,3 +166,4 @@ function Home() {
     </div>
   );
 }
+
