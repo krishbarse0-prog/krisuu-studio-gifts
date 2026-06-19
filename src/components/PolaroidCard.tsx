@@ -1,5 +1,5 @@
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
-import { Heart, Eye, Clock, Play, Sparkles } from "lucide-react";
+import { Heart, Eye, Clock, Play, Sparkles, Bookmark, Flame } from "lucide-react";
 import type { Template } from "@/lib/templates";
 import { CATEGORY_LABEL } from "@/lib/templates";
 import { TEMPLATE_PRIMARY_STICKER, layoutForTemplate } from "@/lib/stickers";
@@ -77,6 +77,20 @@ export function PolaroidCard({
             <Clock size={9} /> {template.duration}
           </span>
 
+          {template.trending && (
+            <span className="absolute bottom-2 left-2 z-[6] inline-flex items-center gap-1 rounded-full bg-love px-2 py-0.5 text-[10px] font-semibold text-primary-foreground shadow-soft">
+              <Flame size={10} fill="currentColor" /> Trending
+            </span>
+          )}
+
+          <button
+            aria-label="Save"
+            onClick={(e) => e.stopPropagation()}
+            className="absolute bottom-2 right-2 z-[6] grid h-7 w-7 place-items-center rounded-full bg-white/90 text-foreground/70 shadow-soft transition hover:scale-110 hover:text-love"
+          >
+            <Bookmark size={12} />
+          </button>
+
           {/* hover play */}
           <span className="absolute inset-0 grid place-items-center bg-foreground/0 opacity-0 transition group-hover:bg-foreground/15 group-hover:opacity-100">
             <span className="grid h-12 w-12 place-items-center rounded-full bg-white/95 shadow-plush">
@@ -101,6 +115,9 @@ export function PolaroidCard({
             </span>
             <span className="inline-flex items-center gap-1">
               <Heart size={11} className="text-love" fill="currentColor" /> {template.loves}
+            </span>
+            <span className="inline-flex items-center gap-1">
+              <Bookmark size={11} /> {template.saves}
             </span>
           </div>
 
