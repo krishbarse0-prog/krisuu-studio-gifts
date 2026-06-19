@@ -132,6 +132,9 @@ function Home() {
         <SocialProofBar />
       </div>
 
+      {/* ───────── How it works ───────── */}
+      <HowItWorks />
+
       {/* ───────── Rails ───────── */}
       <div id="trending" />
       <CategoryRail kicker="going viral" title="Trending Gifts" items={byRail("trending")} onOpen={setActive} />
@@ -183,6 +186,16 @@ function Home() {
       {/* ───────── Reactions ───────── */}
       <div id="reactions" />
       <Testimonials />
+
+      {/* ───────── Pricing ───────── */}
+      <Pricing />
+
+      {/* ───────── Trust strip ───────── */}
+      <TrustStrip />
+
+      {/* ───────── FAQ ───────── */}
+      <FAQ />
+
 
       {/* ───────── Final CTA ───────── */}
       <section id="stories" className="px-4 pb-20 pt-4 text-center sm:px-8">
