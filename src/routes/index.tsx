@@ -10,6 +10,11 @@ import { MobileBottomNav } from "@/components/MobileBottomNav";
 import { LiveGiftPreview } from "@/components/LiveGiftPreview";
 import { SocialProofBar } from "@/components/SocialProofBar";
 import { Testimonials } from "@/components/Testimonials";
+import { HowItWorks } from "@/components/HowItWorks";
+import { Pricing } from "@/components/Pricing";
+import { FAQ } from "@/components/FAQ";
+import { TrustStrip } from "@/components/TrustStrip";
+import { HeroFlow } from "@/components/HeroFlow";
 import { byRail, type Template } from "@/lib/templates";
 
 export const Route = createFileRoute("/")({
@@ -107,6 +112,8 @@ function Home() {
             <p className="mt-4 font-hand text-lg text-foreground/55 lg:text-left">
               some gifts are opened once. this one gets revisited forever.
             </p>
+
+            <HeroFlow />
           </div>
 
           {/* live preview */}
