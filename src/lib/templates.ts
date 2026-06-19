@@ -25,6 +25,8 @@ export type Template = {
   duration: string; // viewing time
   views: string;
   loves: string;
+  saves: string;
+  trending?: boolean;
 };
 
 export const CATEGORY_LABEL: Record<Category, string> = {
