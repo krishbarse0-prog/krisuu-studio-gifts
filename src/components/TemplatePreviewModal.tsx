@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { X } from "lucide-react";
 import { useEffect } from "react";
+import { Link } from "@tanstack/react-router";
 import type { Template } from "@/lib/templates";
 
 export function TemplatePreviewModal({
@@ -52,12 +53,22 @@ export function TemplatePreviewModal({
               <p className="font-script text-2xl text-love">{template.title}</p>
               <p className="text-sm text-muted-foreground">{template.tagline}</p>
               <div className="flex gap-2 pt-2">
-                <button className="flex-1 rounded-full bg-foreground py-3 text-sm font-medium text-background hover:opacity-90">
+                <Link
+                  to="/create"
+                  search={{ template: template.slug }}
+                  onClick={onClose}
+                  className="flex-1 rounded-full bg-foreground py-3 text-center text-sm font-medium text-background hover:opacity-90"
+                >
                   Use this template
-                </button>
-                <button className="rounded-full border border-border bg-card px-4 py-3 text-sm hover:bg-muted">
-                  ♡ Save
-                </button>
+                </Link>
+                <Link
+                  to="/template/$slug"
+                  params={{ slug: template.slug }}
+                  onClick={onClose}
+                  className="rounded-full border border-border bg-card px-4 py-3 text-sm hover:bg-muted"
+                >
+                  Details
+                </Link>
               </div>
             </div>
           </motion.div>

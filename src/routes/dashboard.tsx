@@ -175,8 +175,20 @@ function GiftRow({ g }: { g: Gift }) {
         <p className="truncate text-[11px] text-muted-foreground">{t?.title ?? g.templateSlug}</p>
       </div>
       <div className="flex gap-1">
-        <RowBtn to="/gift/$giftId" params={{ giftId: g.slug }} label="View" icon={Eye} />
-        <RowBtn to="/create" search={{ gift: g.id, template: g.templateSlug }} label="Edit" icon={Edit3} />
+        <Link
+          to="/gift/$giftId"
+          params={{ giftId: g.slug }}
+          className="inline-flex h-8 items-center gap-1 rounded-full bg-muted/60 px-2.5 text-[11px] hover:bg-muted"
+        >
+          <Eye size={11} /> <span className="hidden sm:inline">View</span>
+        </Link>
+        <Link
+          to="/create"
+          search={{ gift: g.id, template: g.templateSlug }}
+          className="inline-flex h-8 items-center gap-1 rounded-full bg-muted/60 px-2.5 text-[11px] hover:bg-muted"
+        >
+          <Edit3 size={11} /> <span className="hidden sm:inline">Edit</span>
+        </Link>
         <button
           aria-label="Duplicate"
           onClick={() => duplicateGift(g.id)}
@@ -195,32 +207,5 @@ function GiftRow({ g }: { g: Gift }) {
         </button>
       </div>
     </div>
-  );
-}
-
-function RowBtn({
-  to,
-  params,
-  search,
-  label,
-  icon: Icon,
-}: {
-  to: string;
-  params?: Record<string, string>;
-  search?: Record<string, string>;
-  label: string;
-  icon: typeof Eye;
-}) {
-  return (
-    <Link
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      to={to as any}
-      params={params as never}
-      search={search as never}
-      className="inline-flex h-8 items-center gap-1 rounded-full bg-muted/60 px-2.5 text-[11px] hover:bg-muted"
-      aria-label={label}
-    >
-      <Icon size={11} /> <span className="hidden sm:inline">{label}</span>
-    </Link>
   );
 }
