@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { ArrowRight, Play, Sparkles, Star } from "lucide-react";
@@ -93,20 +93,20 @@ function Home() {
               transition={{ delay: 0.35 }}
               className="mt-7 flex flex-wrap items-center justify-center gap-3 lg:justify-start"
             >
-              <a
+              <Link
+                to="/create"
                 id="create"
-                href="#trending"
                 className="group inline-flex items-center gap-2 rounded-full bg-love px-7 py-3.5 text-sm font-medium text-primary-foreground shadow-plush transition hover:scale-[1.03]"
               >
                 <Sparkles size={15} /> Create Gift
                 <ArrowRight size={15} className="transition group-hover:translate-x-0.5" />
-              </a>
-              <a
-                href="#demo"
+              </Link>
+              <Link
+                to="/templates"
                 className="inline-flex items-center gap-2 rounded-full border border-border bg-card/85 px-6 py-3.5 text-sm font-medium text-foreground backdrop-blur hover:bg-card"
               >
-                <Play size={13} fill="currentColor" /> Watch Demo
-              </a>
+                <Play size={13} fill="currentColor" /> Browse templates
+              </Link>
             </motion.div>
 
             <p className="mt-4 font-hand text-lg text-foreground/55 lg:text-left">
@@ -206,12 +206,12 @@ function Home() {
         >
           Make something they'll never delete.
         </h2>
-        <a
-          href="#create"
+        <Link
+          to="/create"
           className="mt-6 inline-flex items-center gap-2 rounded-full bg-love px-7 py-3.5 text-sm font-medium text-primary-foreground shadow-plush"
         >
           <Sparkles size={14} /> Start Creating
-        </a>
+        </Link>
         <p className="mt-12 text-xs text-muted-foreground">
           © {new Date().getFullYear()} Krisuu Studio · made with feelings
         </p>

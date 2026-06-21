@@ -1,5 +1,6 @@
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { Heart, Eye, Clock, Play, Sparkles, Bookmark, Flame } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import type { Template } from "@/lib/templates";
 import { CATEGORY_LABEL } from "@/lib/templates";
 import { TEMPLATE_PRIMARY_STICKER, layoutForTemplate } from "@/lib/stickers";
@@ -128,9 +129,13 @@ export function PolaroidCard({
             >
               Preview
             </button>
-            <button className="flex-[1.1] inline-flex items-center justify-center gap-1 rounded-full bg-foreground py-2 text-[11px] font-medium text-background hover:opacity-90">
+            <Link
+              to="/create"
+              search={{ template: template.slug }}
+              className="flex-[1.1] inline-flex items-center justify-center gap-1 rounded-full bg-foreground py-2 text-[11px] font-medium text-background hover:opacity-90"
+            >
               <Sparkles size={11} /> Create
-            </button>
+            </Link>
           </div>
         </div>
       </motion.div>
