@@ -35,7 +35,7 @@ export const Route = createFileRoute("/template/$slug")({
 });
 
 function TemplatePage() {
-  const t = Route.useLoaderData();
+  const t = Route.useLoaderData() as Template;
   const related = templates.filter((x) => x.category === t.category && x.id !== t.id).slice(0, 4);
 
   return (
