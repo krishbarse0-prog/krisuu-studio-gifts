@@ -9,38 +9,161 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TemplatesRouteImport } from './routes/templates'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as CreateRouteImport } from './routes/create'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as TemplateSlugRouteImport } from './routes/template.$slug'
+import { Route as PreviewGiftIdRouteImport } from './routes/preview.$giftId'
+import { Route as GiftGiftIdRouteImport } from './routes/gift.$giftId'
 
+const TemplatesRoute = TemplatesRouteImport.update({
+  id: '/templates',
+  path: '/templates',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CreateRoute = CreateRouteImport.update({
+  id: '/create',
+  path: '/create',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TemplateSlugRoute = TemplateSlugRouteImport.update({
+  id: '/template/$slug',
+  path: '/template/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PreviewGiftIdRoute = PreviewGiftIdRouteImport.update({
+  id: '/preview/$giftId',
+  path: '/preview/$giftId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GiftGiftIdRoute = GiftGiftIdRouteImport.update({
+  id: '/gift/$giftId',
+  path: '/gift/$giftId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/create': typeof CreateRoute
+  '/dashboard': typeof DashboardRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/templates': typeof TemplatesRoute
+  '/gift/$giftId': typeof GiftGiftIdRoute
+  '/preview/$giftId': typeof PreviewGiftIdRoute
+  '/template/$slug': typeof TemplateSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/create': typeof CreateRoute
+  '/dashboard': typeof DashboardRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/templates': typeof TemplatesRoute
+  '/gift/$giftId': typeof GiftGiftIdRoute
+  '/preview/$giftId': typeof PreviewGiftIdRoute
+  '/template/$slug': typeof TemplateSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/create': typeof CreateRoute
+  '/dashboard': typeof DashboardRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/templates': typeof TemplatesRoute
+  '/gift/$giftId': typeof GiftGiftIdRoute
+  '/preview/$giftId': typeof PreviewGiftIdRoute
+  '/template/$slug': typeof TemplateSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/create'
+    | '/dashboard'
+    | '/sitemap.xml'
+    | '/templates'
+    | '/gift/$giftId'
+    | '/preview/$giftId'
+    | '/template/$slug'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/create'
+    | '/dashboard'
+    | '/sitemap.xml'
+    | '/templates'
+    | '/gift/$giftId'
+    | '/preview/$giftId'
+    | '/template/$slug'
+  id:
+    | '__root__'
+    | '/'
+    | '/create'
+    | '/dashboard'
+    | '/sitemap.xml'
+    | '/templates'
+    | '/gift/$giftId'
+    | '/preview/$giftId'
+    | '/template/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CreateRoute: typeof CreateRoute
+  DashboardRoute: typeof DashboardRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  TemplatesRoute: typeof TemplatesRoute
+  GiftGiftIdRoute: typeof GiftGiftIdRoute
+  PreviewGiftIdRoute: typeof PreviewGiftIdRoute
+  TemplateSlugRoute: typeof TemplateSlugRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/templates': {
+      id: '/templates'
+      path: '/templates'
+      fullPath: '/templates'
+      preLoaderRoute: typeof TemplatesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/create': {
+      id: '/create'
+      path: '/create'
+      fullPath: '/create'
+      preLoaderRoute: typeof CreateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,22 +171,40 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/template/$slug': {
+      id: '/template/$slug'
+      path: '/template/$slug'
+      fullPath: '/template/$slug'
+      preLoaderRoute: typeof TemplateSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/preview/$giftId': {
+      id: '/preview/$giftId'
+      path: '/preview/$giftId'
+      fullPath: '/preview/$giftId'
+      preLoaderRoute: typeof PreviewGiftIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/gift/$giftId': {
+      id: '/gift/$giftId'
+      path: '/gift/$giftId'
+      fullPath: '/gift/$giftId'
+      preLoaderRoute: typeof GiftGiftIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CreateRoute: CreateRoute,
+  DashboardRoute: DashboardRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
+  TemplatesRoute: TemplatesRoute,
+  GiftGiftIdRoute: GiftGiftIdRoute,
+  PreviewGiftIdRoute: PreviewGiftIdRoute,
+  TemplateSlugRoute: TemplateSlugRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

@@ -1,10 +1,10 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { ArrowRight, Bookmark, Clock, Eye, Heart, Sparkles } from "lucide-react";
 import { BrandHeader } from "@/components/BrandHeader";
-import { CATEGORY_LABEL, templates } from "@/lib/templates";
+import { CATEGORY_LABEL, templates, type Template } from "@/lib/templates";
 
 export const Route = createFileRoute("/template/$slug")({
-  loader: ({ params }) => {
+  loader: ({ params }): Template => {
     const t = templates.find((x) => x.slug === params.slug);
     if (!t) throw notFound();
     return t;
