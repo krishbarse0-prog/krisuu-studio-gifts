@@ -28,10 +28,10 @@ export function GiftRenderer({
 
   useEffect(() => {
     if (!autoplay) return;
-    const t1 = setTimeout(() => setStage("opening"), 1200);
-    const t2 = setTimeout(() => setStage("letter"), 2800);
-    const t3 = setTimeout(() => setStage("gallery"), 7800);
-    const t4 = setTimeout(() => setStage("finale"), 13000);
+    const t1 = setTimeout(() => setStage("opening"), 1600);
+    const t2 = setTimeout(() => setStage("letter"), 3200);
+    const t3 = setTimeout(() => setStage("gallery"), 9500);
+    const t4 = setTimeout(() => setStage("finale"), 15500);
     return () => {
       [t1, t2, t3, t4].forEach(clearTimeout);
     };

@@ -198,24 +198,51 @@ function Home() {
 
 
       {/* ───────── Final CTA ───────── */}
-      <section id="stories" className="px-4 pb-20 pt-4 text-center sm:px-8">
+      <section
+        id="stories"
+        className="relative overflow-hidden px-4 pb-20 pt-10 text-center sm:px-8"
+      >
+        <div
+          className="absolute inset-x-6 inset-y-2 -z-10 rounded-[2.5rem]"
+          style={{
+            background:
+              "radial-gradient(70% 90% at 50% 0%, var(--love-soft), transparent 70%), var(--card)",
+          }}
+        />
         <p className="font-hand text-2xl text-foreground/65">your turn ✿</p>
         <h2
-          className="mt-1 text-2xl font-semibold sm:text-4xl"
+          className="mt-1 text-3xl font-semibold leading-tight sm:text-5xl"
           style={{ fontFamily: "var(--font-display)" }}
         >
           Make something they'll never delete.
         </h2>
+        <p className="mx-auto mt-3 max-w-md text-sm text-muted-foreground">
+          Two minutes. One link. A memory that opens every time they need you.
+        </p>
         <Link
           to="/create"
-          className="mt-6 inline-flex items-center gap-2 rounded-full bg-love px-7 py-3.5 text-sm font-medium text-primary-foreground shadow-plush"
+          className="mt-7 inline-flex items-center gap-2 rounded-full bg-love px-7 py-3.5 text-sm font-medium text-primary-foreground shadow-plush transition hover:scale-[1.03]"
         >
           <Sparkles size={14} /> Start Creating
+          <ArrowRight size={14} />
         </Link>
-        <p className="mt-12 text-xs text-muted-foreground">
-          © {new Date().getFullYear()} Krisuu Studio · made with feelings
-        </p>
+
+        <footer className="mx-auto mt-16 max-w-5xl border-t border-border/60 pt-8 text-xs text-muted-foreground">
+          <div className="flex flex-col items-center justify-between gap-3 sm:flex-row">
+            <p className="font-hand text-base text-foreground/70">
+              made with feelings · in india
+            </p>
+            <div className="flex flex-wrap items-center justify-center gap-4">
+              <Link to="/templates" className="hover:text-foreground">Templates</Link>
+              <Link to="/dashboard" className="hover:text-foreground">Your gifts</Link>
+              <a href="#pricing" className="hover:text-foreground">Pricing</a>
+              <a href="#faq" className="hover:text-foreground">FAQ</a>
+            </div>
+            <p>© 2026 Krisuu Studio</p>
+          </div>
+        </footer>
       </section>
+
 
       <MobileBottomNav />
       <TemplatePreviewModal template={active} onClose={() => setActive(null)} />
