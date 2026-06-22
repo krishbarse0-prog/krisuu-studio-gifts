@@ -1,34 +1,53 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
-import { Eye, Image as ImageIcon, Save, Send, Trash2, Wand2 } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  Check,
+  Eye,
+  ImagePlus,
+  Music2,
+  Save,
+  Send,
+  Sparkles,
+  Trash2,
+  UploadCloud,
+  Wand2,
+} from "lucide-react";
 import type { Gift, GiftAnimation, GiftTheme } from "@/lib/gift-store";
-import { PALETTES, saveGift, setPrefs } from "@/lib/gift-store";
+import { PALETTES, saveGift, setPrefs, THEME_GRADIENT } from "@/lib/gift-store";
 import { GiftRenderer } from "./GiftRenderer";
 
-const THEMES: { id: GiftTheme; label: string; swatch: string }[] = [
-  { id: "rose", label: "Rose", swatch: "linear-gradient(135deg, var(--love-soft), var(--card))" },
-  { id: "sunset", label: "Sunset", swatch: "linear-gradient(135deg, var(--birthday-soft), var(--love-soft))" },
-  { id: "moonlit", label: "Moonlit", swatch: "linear-gradient(180deg, oklch(0.35 0.06 290), oklch(0.55 0.08 320))" },
-  { id: "mint", label: "Mint", swatch: "linear-gradient(135deg, var(--memory-soft), var(--card))" },
-  { id: "cream", label: "Cream", swatch: "linear-gradient(135deg, var(--cream), var(--card))" },
+const THEMES: { id: GiftTheme; label: string; mood: string }[] = [
+  { id: "rose", label: "Rose", mood: "warm · romantic" },
+  { id: "sunset", label: "Sunset", mood: "golden · soft" },
+  { id: "moonlit", label: "Moonlit", mood: "dreamy · proposal" },
+  { id: "mint", label: "Mint", mood: "fresh · friendship" },
+  { id: "cream", label: "Cream", mood: "minimal · editorial" },
 ];
 
-const ANIMATIONS: { id: GiftAnimation; label: string }[] = [
-  { id: "envelope", label: "Envelope" },
-  { id: "giftbox", label: "Gift box" },
-  { id: "scrapbook", label: "Scrapbook" },
-  { id: "moonlit", label: "Moonlit" },
-  { id: "balloons", label: "Balloons" },
+const ANIMATIONS: { id: GiftAnimation; label: string; icon: string; hint: string }[] = [
+  { id: "envelope", label: "Envelope", icon: "💌", hint: "classic letter reveal" },
+  { id: "giftbox", label: "Gift Box", icon: "🎁", hint: "unwrap with confetti" },
+  { id: "scrapbook", label: "Scrapbook", icon: "📷", hint: "polaroid pages" },
+  { id: "moonlit", label: "Moonlit", icon: "🌙", hint: "dreamy night" },
+  { id: "balloons", label: "Balloons", icon: "🎈", hint: "floating joy" },
 ];
 
 export function GiftEditor({ initial }: { initial: Gift }) {
   const [gift, setGift] = useState<Gift>(initial);
-  const [saving, setSaving] = useState<null | "draft" | "publish">(null);
+  const [saved, setSaved] = useState(false);
+  const [dragOver, setDragOver] = useState(false);
   const navigate = useNavigate();
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // autosave to localStorage 800ms after change
+  // autosave
   useEffect(() => {
-    const t = setTimeout(() => saveGift(gift), 800);
+    const t = setTimeout(() => {
+      saveGift(gift);
+      setSaved(true);
+      const h = setTimeout(() => setSaved(false), 1400);
+      return () => clearTimeout(h);
+    }, 700);
     return () => clearTimeout(t);
   }, [gift]);
 
@@ -36,215 +55,410 @@ export function GiftEditor({ initial }: { initial: Gift }) {
     setGift((g) => ({ ...g, [k]: v }));
   }
 
-  async function onPhotos(files: FileList | null) {
+  async function handleFiles(files: FileList | File[] | null) {
     if (!files) return;
     const arr: string[] = [];
-    for (const f of Array.from(files).slice(0, 6)) {
+    for (const f of Array.from(files).slice(0, 6 - gift.photos.length)) {
+      if (!f.type.startsWith("image/")) continue;
       arr.push(await fileToDataUrl(f));
     }
-    patch("photos", [...gift.photos, ...arr].slice(0, 6));
+    if (arr.length) patch("photos", [...gift.photos, ...arr].slice(0, 6));
   }
 
   function removePhoto(i: number) {
     patch("photos", gift.photos.filter((_, idx) => idx !== i));
   }
 
-  function publish() {
-    setSaving("publish");
-    const next = saveGift({ ...gift, status: "published" });
-    setPrefs({ lastTheme: gift.theme, lastPalette: gift.palette });
-    setTimeout(() => navigate({ to: "/gift/$giftId", params: { giftId: next.slug } }), 200);
+  function movePhoto(i: number, dir: -1 | 1) {
+    const next = [...gift.photos];
+    const j = i + dir;
+    if (j < 0 || j >= next.length) return;
+    [next[i], next[j]] = [next[j], next[i]];
+    patch("photos", next);
   }
 
+  function publish() {
+    const next = saveGift({ ...gift, status: "published" });
+    setPrefs({ lastTheme: gift.theme, lastPalette: gift.palette });
+    setTimeout(
+      () => navigate({ to: "/gift/$giftId", params: { giftId: next.slug } }),
+      180,
+    );
+  }
+
+  const filledCount =
+    (gift.recipientName ? 1 : 0) +
+    (gift.senderName ? 1 : 0) +
+    (gift.message.length > 8 ? 1 : 0) +
+    (gift.photos.length ? 1 : 0);
+  const progress = Math.round((filledCount / 4) * 100);
+
   return (
-    <div className="mx-auto grid w-full max-w-7xl gap-6 px-4 py-6 lg:grid-cols-[minmax(0,420px)_1fr] lg:px-8">
-      {/* Form */}
-      <div className="rounded-3xl border border-border/70 bg-card/85 p-5 shadow-soft backdrop-blur sm:p-6">
-        <div className="flex items-center justify-between">
-          <h1 className="text-xl font-semibold" style={{ fontFamily: "var(--font-display)" }}>
-            Create your gift
-          </h1>
-          <Link to="/templates" className="text-xs text-muted-foreground hover:text-foreground">
-            change template →
-          </Link>
-        </div>
-        <p className="mt-1 text-xs text-muted-foreground">Edits autosave to this device.</p>
-
-        <div className="mt-5 space-y-4">
-          <Field label="To (recipient)">
-            <input
-              className="input"
-              value={gift.recipientName}
-              maxLength={40}
-              placeholder="Anna"
-              onChange={(e) => patch("recipientName", e.target.value)}
-            />
-          </Field>
-          <Field label="From (your name)">
-            <input
-              className="input"
-              value={gift.senderName}
-              maxLength={40}
-              placeholder="Sam"
-              onChange={(e) => patch("senderName", e.target.value)}
-            />
-          </Field>
-          <Field label="Your message">
-            <textarea
-              className="input min-h-[110px] resize-y leading-relaxed"
-              value={gift.message}
-              maxLength={500}
-              placeholder="every tuesday with you feels like a small festival…"
-              onChange={(e) => patch("message", e.target.value)}
-            />
-            <span className="mt-1 block text-right text-[10px] text-muted-foreground">
-              {gift.message.length}/500
-            </span>
-          </Field>
-
-          <Field label="Photos (up to 6)">
-            <label className="flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-dashed border-border bg-background/60 py-4 text-xs text-muted-foreground hover:bg-background">
-              <ImageIcon size={14} /> Click to upload
-              <input
-                type="file"
-                accept="image/*"
-                multiple
-                className="hidden"
-                onChange={(e) => onPhotos(e.target.files)}
-              />
-            </label>
-            {gift.photos.length > 0 && (
-              <div className="mt-2 grid grid-cols-3 gap-2">
-                {gift.photos.map((p, i) => (
-                  <div key={i} className="group relative aspect-square overflow-hidden rounded-lg">
-                    <img src={p} alt="" className="h-full w-full object-cover" />
-                    <button
-                      onClick={() => removePhoto(i)}
-                      className="absolute right-1 top-1 grid h-6 w-6 place-items-center rounded-full bg-foreground/70 text-background opacity-0 transition group-hover:opacity-100"
-                    >
-                      <Trash2 size={11} />
-                    </button>
-                  </div>
-                ))}
+    <div className="mx-auto grid w-full max-w-7xl gap-6 px-4 py-6 lg:grid-cols-[minmax(0,440px)_1fr] lg:gap-8 lg:px-8">
+      {/* ─────────── Configuration ─────────── */}
+      <div className="order-2 lg:order-1">
+        <div className="overflow-hidden rounded-3xl border border-border/70 bg-card/85 shadow-soft backdrop-blur">
+          {/* header */}
+          <div className="border-b border-border/60 px-5 py-4 sm:px-6">
+            <div className="flex items-center justify-between gap-3">
+              <div className="min-w-0">
+                <p className="font-hand text-base text-foreground/65 leading-none">your studio</p>
+                <h1
+                  className="mt-0.5 truncate text-xl font-semibold sm:text-2xl"
+                  style={{ fontFamily: "var(--font-display)" }}
+                >
+                  Create your gift
+                </h1>
               </div>
-            )}
-          </Field>
-
-          <Field label="Music URL (mp3 / audio)">
-            <input
-              className="input"
-              type="url"
-              value={gift.musicUrl ?? ""}
-              placeholder="https://…/song.mp3"
-              onChange={(e) => patch("musicUrl", e.target.value)}
-            />
-          </Field>
-
-          <Field label="Theme">
-            <div className="grid grid-cols-5 gap-2">
-              {THEMES.map((t) => (
-                <button
-                  key={t.id}
-                  type="button"
-                  onClick={() => patch("theme", t.id)}
-                  className={`group flex flex-col items-center gap-1 rounded-xl border p-1.5 text-[10px] transition ${
-                    gift.theme === t.id ? "border-foreground bg-background" : "border-border/60 hover:bg-background/60"
-                  }`}
-                >
-                  <span className="h-8 w-full rounded-md" style={{ background: t.swatch }} />
-                  {t.label}
-                </button>
-              ))}
+              <Link
+                to="/templates"
+                className="shrink-0 text-[11px] text-muted-foreground hover:text-foreground"
+              >
+                change template →
+              </Link>
             </div>
-          </Field>
 
-          <Field label="Color palette">
-            <div className="flex flex-wrap gap-2">
-              {PALETTES.map((p) => (
-                <button
-                  key={p.id}
-                  type="button"
-                  onClick={() => patch("palette", p.id)}
-                  aria-label={p.label}
-                  className={`h-9 w-9 rounded-full border-2 transition ${
-                    gift.palette === p.id ? "border-foreground scale-110" : "border-white"
-                  }`}
-                  style={{ background: p.color }}
+            {/* progress */}
+            <div className="mt-3 flex items-center gap-2">
+              <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-muted/70">
+                <motion.div
+                  animate={{ width: `${progress}%` }}
+                  transition={{ duration: 0.4 }}
+                  className="h-full rounded-full bg-love"
                 />
-              ))}
+              </div>
+              <AnimatePresence>
+                {saved && (
+                  <motion.span
+                    initial={{ opacity: 0, x: 4 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0 }}
+                    className="inline-flex items-center gap-1 text-[10px] text-muted-foreground"
+                  >
+                    <Check size={10} className="text-love" /> saved
+                  </motion.span>
+                )}
+              </AnimatePresence>
             </div>
-          </Field>
+          </div>
 
-          <Field label="Animation style">
-            <div className="flex flex-wrap gap-2">
-              {ANIMATIONS.map((a) => (
-                <button
-                  key={a.id}
-                  type="button"
-                  onClick={() => patch("animation", a.id)}
-                  className={`rounded-full border px-3 py-1.5 text-[11px] transition ${
-                    gift.animation === a.id
-                      ? "border-foreground bg-foreground text-background"
-                      : "border-border hover:bg-background/60"
-                  }`}
-                >
-                  {a.label}
-                </button>
-              ))}
+          <div className="space-y-6 p-5 sm:p-6">
+            {/* names */}
+            <div className="grid gap-3 sm:grid-cols-2">
+              <Field label="To" hint="who's this for?">
+                <input
+                  className="input"
+                  value={gift.recipientName}
+                  maxLength={40}
+                  placeholder="Anna"
+                  onChange={(e) => patch("recipientName", e.target.value)}
+                />
+              </Field>
+              <Field label="From" hint="your name">
+                <input
+                  className="input"
+                  value={gift.senderName}
+                  maxLength={40}
+                  placeholder="Sam"
+                  onChange={(e) => patch("senderName", e.target.value)}
+                />
+              </Field>
             </div>
-          </Field>
-        </div>
 
-        <div className="mt-6 grid grid-cols-2 gap-2">
-          <button
-            onClick={() => {
-              setSaving("draft");
-              saveGift({ ...gift, status: "draft" });
-              setTimeout(() => setSaving(null), 600);
-            }}
-            className="inline-flex items-center justify-center gap-1.5 rounded-full border border-border bg-background py-3 text-xs font-medium hover:bg-muted/60"
-          >
-            <Save size={12} /> {saving === "draft" ? "Saved" : "Save draft"}
-          </button>
-          <button
-            onClick={publish}
-            className="inline-flex items-center justify-center gap-1.5 rounded-full bg-foreground py-3 text-xs font-medium text-background shadow-plush hover:opacity-90"
-          >
-            <Send size={12} /> Publish & share
-          </button>
+            <Field label="Your message" hint={`${gift.message.length}/500`}>
+              <textarea
+                className="input min-h-[120px] resize-y leading-relaxed"
+                value={gift.message}
+                maxLength={500}
+                placeholder="every tuesday with you feels like a small festival…"
+                onChange={(e) => patch("message", e.target.value)}
+              />
+            </Field>
+
+            {/* photo upload */}
+            <Field label="Photos" hint={`${gift.photos.length}/6`}>
+              <div
+                onDragOver={(e) => {
+                  e.preventDefault();
+                  setDragOver(true);
+                }}
+                onDragLeave={() => setDragOver(false)}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  setDragOver(false);
+                  handleFiles(e.dataTransfer.files);
+                }}
+                onClick={() => fileInputRef.current?.click()}
+                role="button"
+                tabIndex={0}
+                className={`group cursor-pointer rounded-2xl border-2 border-dashed px-4 py-6 text-center transition ${
+                  dragOver
+                    ? "border-love bg-love-soft/60"
+                    : "border-border bg-background/50 hover:border-foreground/30 hover:bg-background/80"
+                }`}
+              >
+                <span className="mx-auto grid h-10 w-10 place-items-center rounded-full bg-love-soft text-love transition group-hover:scale-110">
+                  <UploadCloud size={18} />
+                </span>
+                <p className="mt-2 text-[13px] font-medium text-foreground">
+                  Drop photos or <span className="underline decoration-dotted">browse</span>
+                </p>
+                <p className="mt-0.5 text-[11px] text-muted-foreground">
+                  up to 6 · JPG, PNG · they live on this device
+                </p>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  className="hidden"
+                  onChange={(e) => handleFiles(e.target.files)}
+                />
+              </div>
+
+              {gift.photos.length > 0 && (
+                <div className="mt-3 grid grid-cols-3 gap-2 sm:grid-cols-6">
+                  {gift.photos.map((p, i) => (
+                    <motion.div
+                      key={p.slice(0, 32) + i}
+                      layout
+                      initial={{ scale: 0.85, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      className="group/photo relative aspect-square overflow-hidden rounded-xl shadow-soft ring-1 ring-border/60"
+                    >
+                      <img src={p} alt="" className="h-full w-full object-cover" />
+                      <div className="absolute inset-0 flex flex-col justify-between bg-foreground/0 p-1 opacity-0 transition group-hover/photo:bg-foreground/30 group-hover/photo:opacity-100">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            removePhoto(i);
+                          }}
+                          className="ml-auto grid h-6 w-6 place-items-center rounded-full bg-white/95 text-foreground shadow-soft"
+                          aria-label="Remove"
+                        >
+                          <Trash2 size={11} />
+                        </button>
+                        <div className="flex justify-between gap-1">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              movePhoto(i, -1);
+                            }}
+                            disabled={i === 0}
+                            className="grid h-5 w-5 place-items-center rounded-full bg-white/95 text-foreground shadow-soft disabled:opacity-30"
+                            aria-label="Move left"
+                          >
+                            ‹
+                          </button>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              movePhoto(i, 1);
+                            }}
+                            disabled={i === gift.photos.length - 1}
+                            className="grid h-5 w-5 place-items-center rounded-full bg-white/95 text-foreground shadow-soft disabled:opacity-30"
+                            aria-label="Move right"
+                          >
+                            ›
+                          </button>
+                        </div>
+                      </div>
+                      <span className="absolute left-1 top-1 grid h-4 w-4 place-items-center rounded-full bg-foreground/70 text-[9px] font-bold text-background">
+                        {i + 1}
+                      </span>
+                    </motion.div>
+                  ))}
+                  {gift.photos.length < 6 && (
+                    <button
+                      onClick={() => fileInputRef.current?.click()}
+                      className="grid aspect-square place-items-center rounded-xl border border-dashed border-border bg-background/40 text-muted-foreground transition hover:border-foreground/30 hover:text-foreground"
+                      aria-label="Add another"
+                    >
+                      <ImagePlus size={18} />
+                    </button>
+                  )}
+                </div>
+              )}
+            </Field>
+
+            {/* music */}
+            <Field label="Background music" hint="optional · adds magic">
+              <div className="relative">
+                <Music2
+                  size={14}
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
+                />
+                <input
+                  className="input pl-9"
+                  type="url"
+                  value={gift.musicUrl ?? ""}
+                  placeholder="paste an mp3 link…"
+                  onChange={(e) => patch("musicUrl", e.target.value)}
+                />
+              </div>
+            </Field>
+
+            {/* themes */}
+            <Field label="Theme" hint="set the mood">
+              <div className="grid grid-cols-2 gap-2 sm:grid-cols-5">
+                {THEMES.map((t) => {
+                  const active = gift.theme === t.id;
+                  return (
+                    <button
+                      key={t.id}
+                      type="button"
+                      onClick={() => patch("theme", t.id)}
+                      className={`group relative overflow-hidden rounded-xl border p-1.5 text-left transition ${
+                        active
+                          ? "border-foreground shadow-soft"
+                          : "border-border/60 hover:border-foreground/30"
+                      }`}
+                    >
+                      <span
+                        className="block h-14 w-full rounded-lg"
+                        style={{ background: THEME_GRADIENT[t.id] }}
+                      />
+                      <p className="mt-1.5 truncate text-[11px] font-semibold text-foreground">
+                        {t.label}
+                      </p>
+                      <p className="truncate text-[9.5px] text-muted-foreground">{t.mood}</p>
+                      {active && (
+                        <span className="absolute right-1.5 top-1.5 grid h-4 w-4 place-items-center rounded-full bg-foreground text-background">
+                          <Check size={9} />
+                        </span>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            </Field>
+
+            {/* palette */}
+            <Field label="Accent color">
+              <div className="flex flex-wrap gap-2">
+                {PALETTES.map((p) => {
+                  const active = gift.palette === p.id;
+                  return (
+                    <button
+                      key={p.id}
+                      type="button"
+                      onClick={() => patch("palette", p.id)}
+                      aria-label={p.label}
+                      title={p.label}
+                      className={`relative h-9 w-9 rounded-full transition ${
+                        active ? "scale-110 ring-2 ring-foreground ring-offset-2 ring-offset-card" : "ring-1 ring-border"
+                      }`}
+                      style={{ background: p.color }}
+                    >
+                      {active && (
+                        <Check
+                          size={12}
+                          className="absolute inset-0 m-auto text-white drop-shadow"
+                          strokeWidth={3}
+                        />
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            </Field>
+
+            {/* animation */}
+            <Field label="Animation style">
+              <div className="grid grid-cols-2 gap-2 sm:grid-cols-5">
+                {ANIMATIONS.map((a) => {
+                  const active = gift.animation === a.id;
+                  return (
+                    <button
+                      key={a.id}
+                      type="button"
+                      onClick={() => patch("animation", a.id)}
+                      className={`relative rounded-xl border p-2.5 text-center transition ${
+                        active
+                          ? "border-foreground bg-background shadow-soft"
+                          : "border-border/60 bg-background/40 hover:border-foreground/30"
+                      }`}
+                    >
+                      <span className="text-xl">{a.icon}</span>
+                      <p className="mt-1 text-[11px] font-semibold text-foreground">{a.label}</p>
+                      <p className="truncate text-[9.5px] text-muted-foreground">{a.hint}</p>
+                    </button>
+                  );
+                })}
+              </div>
+            </Field>
+          </div>
+
+          {/* sticky actions */}
+          <div className="sticky bottom-0 grid grid-cols-2 gap-2 border-t border-border/60 bg-card/95 px-5 py-3 backdrop-blur sm:px-6">
+            <button
+              onClick={() => saveGift({ ...gift, status: "draft" })}
+              className="inline-flex items-center justify-center gap-1.5 rounded-full border border-border bg-background py-3 text-xs font-medium hover:bg-muted/60"
+            >
+              <Save size={12} /> Save draft
+            </button>
+            <button
+              onClick={publish}
+              className="inline-flex items-center justify-center gap-1.5 rounded-full bg-foreground py-3 text-xs font-medium text-background shadow-plush transition hover:scale-[1.02]"
+            >
+              <Send size={12} /> Publish & share
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* Live preview */}
-      <div className="relative">
-        <div className="sticky top-20">
+      {/* ─────────── Live Preview ─────────── */}
+      <div className="order-1 lg:order-2">
+        <div className="lg:sticky lg:top-20">
           <div className="mb-3 flex items-center justify-between px-1">
             <p className="font-hand text-xl text-foreground/65">live preview</p>
             <Link
               to="/preview/$giftId"
               params={{ giftId: gift.id }}
-              className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
+              className="inline-flex items-center gap-1 rounded-full bg-card/80 px-2.5 py-1 text-[11px] text-muted-foreground shadow-soft backdrop-blur hover:text-foreground"
             >
-              <Eye size={12} /> full screen
+              <Eye size={11} /> full screen
             </Link>
           </div>
-          <div className="overflow-hidden rounded-3xl border border-border/70 shadow-plush">
-            <GiftRenderer gift={gift} compact autoplay />
+
+          {/* device frame */}
+          <div className="relative overflow-hidden rounded-[2rem] border border-white/70 bg-gradient-to-b from-white/80 to-[oklch(0.95_0.04_25/0.6)] p-2.5 shadow-plush backdrop-blur">
+            <div className="mx-auto mb-2 h-1 w-20 rounded-full bg-foreground/15" />
+            <div className="overflow-hidden rounded-[1.4rem]">
+              <GiftRenderer gift={gift} compact autoplay />
+            </div>
           </div>
-          <p className="mt-3 flex items-center justify-center gap-1 text-[11px] text-muted-foreground">
-            <Wand2 size={11} /> changes appear instantly
-          </p>
+
+          <div className="mt-3 flex items-center justify-between px-1 text-[11px] text-muted-foreground">
+            <span className="inline-flex items-center gap-1">
+              <Wand2 size={11} className="text-love" /> updates instantly
+            </span>
+            <span className="inline-flex items-center gap-1">
+              <Sparkles size={11} /> {progress}% complete
+            </span>
+          </div>
         </div>
       </div>
     </div>
   );
 }
 
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
+function Field({
+  label,
+  hint,
+  children,
+}: {
+  label: string;
+  hint?: string;
+  children: React.ReactNode;
+}) {
   return (
     <label className="block">
-      <span className="mb-1.5 block text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
-        {label}
+      <span className="mb-1.5 flex items-center justify-between gap-2">
+        <span className="text-[11px] font-semibold uppercase tracking-wider text-foreground/75">
+          {label}
+        </span>
+        {hint && <span className="text-[10px] text-muted-foreground">{hint}</span>}
       </span>
       {children}
     </label>
