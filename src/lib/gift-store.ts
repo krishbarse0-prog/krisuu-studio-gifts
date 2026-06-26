@@ -117,7 +117,24 @@ export function emptyGift(templateId = "t1", templateSlug = "midnight-love-lette
     status: "draft",
     createdAt: Date.now(),
     updatedAt: Date.now(),
+    password: "",
+    passwordHint: "",
+    revealAt: undefined,
+    voiceNote: "",
+    scratchToReveal: false,
+    scratchLabel: "scratch to reveal",
   };
+}
+
+// ── tiny password obfuscation (NOT real crypto; gift links aren't secrets) ──
+export function encodePassword(pw: string) {
+  if (!pw) return "";
+  try { return typeof window === "undefined" ? pw : window.btoa(unescape(encodeURIComponent(pw))); }
+  catch { return pw; }
+}
+export function checkPassword(stored: string | undefined, attempt: string) {
+  if (!stored) return true;
+  return encodePassword(attempt) === stored;
 }
 
 // ── favorites ─────────────────────────────────────────────
