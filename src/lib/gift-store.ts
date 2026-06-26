@@ -21,6 +21,13 @@ export type Gift = {
   status: "draft" | "published";
   createdAt: number;
   updatedAt: number;
+  // ── premium reveal features ─────────────────────────────
+  password?: string;           // obfuscated (btoa) — gate before reveal
+  passwordHint?: string;       // visible hint shown on the lock screen
+  revealAt?: number;           // unix ms — gift stays locked until then
+  voiceNote?: string;          // data URL (audio/webm or audio/mp4)
+  scratchToReveal?: boolean;   // require scratch interaction to open
+  scratchLabel?: string;       // text shown on the scratch surface
 };
 
 const KEY = "krisuu:gifts:v1";
@@ -110,7 +117,24 @@ export function emptyGift(templateId = "t1", templateSlug = "midnight-love-lette
     status: "draft",
     createdAt: Date.now(),
     updatedAt: Date.now(),
+    password: "",
+    passwordHint: "",
+    revealAt: undefined,
+    voiceNote: "",
+    scratchToReveal: false,
+    scratchLabel: "scratch to reveal",
   };
+}
+
+// ── tiny password obfuscation (NOT real crypto; gift links aren't secrets) ──
+export function encodePassword(pw: string) {
+  if (!pw) return "";
+  try { return typeof window === "undefined" ? pw : window.btoa(unescape(encodeURIComponent(pw))); }
+  catch { return pw; }
+}
+export function checkPassword(stored: string | undefined, attempt: string) {
+  if (!stored) return true;
+  return encodePassword(attempt) === stored;
 }
 
 // ── favorites ─────────────────────────────────────────────
