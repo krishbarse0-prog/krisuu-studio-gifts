@@ -189,6 +189,11 @@ function Letter({
       <p className="mt-6 text-right font-script text-lg text-foreground/70">
         — {gift.senderName || "someone who loves you"}
       </p>
+      {gift.voiceNote && (
+        <div className="mt-4 flex justify-center">
+          <VoiceNotePlayer src={gift.voiceNote} />
+        </div>
+      )}
       <button
         onClick={onSkip}
         className="absolute bottom-3 right-4 text-[11px] text-muted-foreground hover:text-foreground"
