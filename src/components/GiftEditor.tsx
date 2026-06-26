@@ -2,9 +2,13 @@ import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { motion, AnimatePresence } from "framer-motion";
 import {
+  CalendarHeart,
   Check,
+  ChevronDown,
   Eye,
   ImagePlus,
+  Lock,
+  Mic,
   Music2,
   Save,
   Send,
@@ -14,8 +18,9 @@ import {
   Wand2,
 } from "lucide-react";
 import type { Gift, GiftAnimation, GiftTheme } from "@/lib/gift-store";
-import { PALETTES, saveGift, setPrefs, THEME_GRADIENT } from "@/lib/gift-store";
+import { encodePassword, PALETTES, saveGift, setPrefs, THEME_GRADIENT } from "@/lib/gift-store";
 import { GiftRenderer } from "./GiftRenderer";
+import { VoiceRecorder } from "./VoiceNote";
 
 const THEMES: { id: GiftTheme; label: string; mood: string }[] = [
   { id: "rose", label: "Rose", mood: "warm · romantic" },
