@@ -40,8 +40,10 @@ const ANIMATIONS: { id: GiftAnimation; label: string; icon: string; hint: string
 
 export function GiftEditor({ initial }: { initial: Gift }) {
   const [gift, setGift] = useState<Gift>(initial);
+  const [rawPassword, setRawPassword] = useState("");
   const [saved, setSaved] = useState(false);
   const [dragOver, setDragOver] = useState(false);
+  const [advancedOpen, setAdvancedOpen] = useState(false);
   const navigate = useNavigate();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
