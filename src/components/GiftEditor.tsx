@@ -394,6 +394,150 @@ export function GiftEditor({ initial }: { initial: Gift }) {
                 })}
               </div>
             </Field>
+
+            {/* ─── Advanced: premium reveal ─── */}
+            <div className="rounded-2xl border border-dashed border-border/70 bg-background/40">
+              <button
+                type="button"
+                onClick={() => setAdvancedOpen((v) => !v)}
+                className="flex w-full items-center justify-between gap-2 px-4 py-3 text-left"
+              >
+                <span className="inline-flex items-center gap-2 text-[12px] font-semibold uppercase tracking-wider text-foreground/80">
+                  <Sparkles size={13} className="text-love" /> Premium reveal
+                </span>
+                <ChevronDown
+                  size={14}
+                  className={`text-muted-foreground transition ${advancedOpen ? "rotate-180" : ""}`}
+                />
+              </button>
+              <AnimatePresence initial={false}>
+                {advancedOpen && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    className="overflow-hidden"
+                  >
+                    <div className="space-y-5 px-4 pb-5">
+                      {/* voice note */}
+                      <Field label="Voice note" hint="record up to 60s">
+                        <div className="rounded-xl bg-card/60 p-3">
+                          <p className="mb-2 inline-flex items-center gap-1.5 text-[11px] text-foreground/70">
+                            <Mic size={11} className="text-love" />
+                            Add your real voice to the reveal.
+                          </p>
+                          <VoiceRecorder
+                            value={gift.voiceNote}
+                            onChange={(v) => patch("voiceNote", v)}
+                          />
+                        </div>
+                      </Field>
+
+                      {/* password */}
+                      <Field label="Password lock" hint="keep it private">
+                        <div className="space-y-2">
+                          <div className="relative">
+                            <Lock
+                              size={13}
+                              className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
+                            />
+                            <input
+                              className="input pl-9"
+                              type="text"
+                              value={rawPassword}
+                              placeholder="e.g. our anniversary"
+                              onChange={(e) => {
+                                setRawPassword(e.target.value);
+                                patch("password", encodePassword(e.target.value));
+                              }}
+                            />
+                          </div>
+                          <input
+                            className="input"
+                            type="text"
+                            value={gift.passwordHint ?? ""}
+                            placeholder="optional hint shown on the lock screen"
+                            maxLength={60}
+                            onChange={(e) => patch("passwordHint", e.target.value)}
+                          />
+                        </div>
+                      </Field>
+
+                      {/* countdown */}
+                      <Field label="Reveal countdown" hint="opens at this time">
+                        <div className="relative">
+                          <CalendarHeart
+                            size={13}
+                            className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
+                          />
+                          <input
+                            className="input pl-9"
+                            type="datetime-local"
+                            value={
+                              gift.revealAt
+                                ? new Date(gift.revealAt - new Date().getTimezoneOffset() * 60000)
+                                    .toISOString()
+                                    .slice(0, 16)
+                                : ""
+                            }
+                            onChange={(e) =>
+                              patch(
+                                "revealAt",
+                                e.target.value ? new Date(e.target.value).getTime() : undefined,
+                              )
+                            }
+                          />
+                        </div>
+                        {gift.revealAt && (
+                          <button
+                            type="button"
+                            onClick={() => patch("revealAt", undefined)}
+                            className="mt-1.5 text-[10px] text-muted-foreground underline decoration-dotted hover:text-love"
+                          >
+                            clear countdown
+                          </button>
+                        )}
+                      </Field>
+
+                      {/* scratch */}
+                      <Field label="Scratch-to-reveal">
+                        <label className="flex cursor-pointer items-center justify-between gap-3 rounded-xl border border-border/60 bg-card/60 px-3 py-2.5">
+                          <span className="text-[12px] text-foreground/85">
+                            Wrap the gift in scratchable foil ✨
+                          </span>
+                          <span
+                            className={`relative h-5 w-9 rounded-full transition ${
+                              gift.scratchToReveal ? "bg-love" : "bg-muted"
+                            }`}
+                          >
+                            <input
+                              type="checkbox"
+                              className="absolute inset-0 cursor-pointer opacity-0"
+                              checked={!!gift.scratchToReveal}
+                              onChange={(e) => patch("scratchToReveal", e.target.checked)}
+                            />
+                            <span
+                              className={`absolute top-0.5 h-4 w-4 rounded-full bg-white shadow transition ${
+                                gift.scratchToReveal ? "left-4" : "left-0.5"
+                              }`}
+                            />
+                          </span>
+                        </label>
+                        {gift.scratchToReveal && (
+                          <input
+                            className="input mt-2"
+                            value={gift.scratchLabel ?? ""}
+                            placeholder="scratch to reveal"
+                            maxLength={40}
+                            onChange={(e) => patch("scratchLabel", e.target.value)}
+                          />
+                        )}
+                      </Field>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
           </div>
 
           {/* sticky actions */}
