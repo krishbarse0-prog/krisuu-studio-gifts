@@ -21,6 +21,13 @@ export type Gift = {
   status: "draft" | "published";
   createdAt: number;
   updatedAt: number;
+  // ── premium reveal features ─────────────────────────────
+  password?: string;           // obfuscated (btoa) — gate before reveal
+  passwordHint?: string;       // visible hint shown on the lock screen
+  revealAt?: number;           // unix ms — gift stays locked until then
+  voiceNote?: string;          // data URL (audio/webm or audio/mp4)
+  scratchToReveal?: boolean;   // require scratch interaction to open
+  scratchLabel?: string;       // text shown on the scratch surface
 };
 
 const KEY = "krisuu:gifts:v1";
