@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { Heart, Music, Pause, Play, Volume2, VolumeX } from "lucide-react";
 import type { Gift } from "@/lib/gift-store";
 import { THEME_GRADIENT } from "@/lib/gift-store";
+import { VoiceNotePlayer } from "./VoiceNote";
 
 /**
  * Renders the full gift experience. Used both in the live editor preview
