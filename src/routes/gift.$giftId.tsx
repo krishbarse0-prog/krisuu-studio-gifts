@@ -6,6 +6,7 @@ import { PasswordGate } from "@/components/PasswordGate";
 import { CountdownGate } from "@/components/CountdownGate";
 import { ScratchCard } from "@/components/ScratchCard";
 import { GiftReactions } from "@/components/GiftReactions";
+import { GiftQRCode } from "@/components/GiftQRCode";
 import { getGift, type Gift } from "@/lib/gift-store";
 
 export const Route = createFileRoute("/gift/$giftId")({
