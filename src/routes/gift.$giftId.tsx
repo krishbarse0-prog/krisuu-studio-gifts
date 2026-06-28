@@ -31,9 +31,11 @@ function GiftPage() {
   const { giftId } = Route.useParams();
   const [gift, setGift] = useState<Gift | null>(null);
   const [copied, setCopied] = useState(false);
+  const [href, setHref] = useState("");
 
   useEffect(() => {
     setGift(getGift(giftId) ?? null);
+    if (typeof window !== "undefined") setHref(window.location.href);
   }, [giftId]);
 
   if (!gift) {
@@ -76,6 +78,9 @@ function GiftPage() {
           <div className="relative">
             <GiftRenderer gift={gift} autoplay />
             <GiftReactions giftId={gift.id} recipientName={gift.recipientName} />
+            <div className="mx-auto w-full max-w-xl px-5 pb-10">
+              {href && <GiftQRCode url={href} recipientName={gift.recipientName} />}
+            </div>
             <div className="fixed bottom-4 right-4 z-30 flex flex-wrap justify-end gap-2">
               <button
                 onClick={whatsapp}
