@@ -21,6 +21,7 @@ import type { Gift, GiftAnimation, GiftTheme } from "@/lib/gift-store";
 import { encodePassword, PALETTES, saveGift, setPrefs, THEME_GRADIENT } from "@/lib/gift-store";
 import { GiftRenderer } from "./GiftRenderer";
 import { VoiceRecorder } from "./VoiceNote";
+import { GiftQRCode } from "./GiftQRCode";
 
 const THEMES: { id: GiftTheme; label: string; mood: string }[] = [
   { id: "rose", label: "Rose", mood: "warm · romantic" },
@@ -44,6 +45,7 @@ export function GiftEditor({ initial }: { initial: Gift }) {
   const [saved, setSaved] = useState(false);
   const [dragOver, setDragOver] = useState(false);
   const [advancedOpen, setAdvancedOpen] = useState(false);
+  const [publishedGift, setPublishedGift] = useState<Gift | null>(null);
   const navigate = useNavigate();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -87,10 +89,7 @@ export function GiftEditor({ initial }: { initial: Gift }) {
   function publish() {
     const next = saveGift({ ...gift, status: "published" });
     setPrefs({ lastTheme: gift.theme, lastPalette: gift.palette });
-    setTimeout(
-      () => navigate({ to: "/gift/$giftId", params: { giftId: next.slug } }),
-      180,
-    );
+    setPublishedGift(next);
   }
 
   const filledCount =
@@ -101,6 +100,57 @@ export function GiftEditor({ initial }: { initial: Gift }) {
   const progress = Math.round((filledCount / 4) * 100);
 
   return (
+    <>
+      <AnimatePresence>
+        {publishedGift && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 grid place-items-center bg-black/55 p-4 backdrop-blur-sm"
+            onClick={() => setPublishedGift(null)}
+          >
+            <motion.div
+              initial={{ y: 20, scale: 0.96, opacity: 0 }}
+              animate={{ y: 0, scale: 1, opacity: 1 }}
+              exit={{ y: 10, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+              className="w-full max-w-md"
+            >
+              <div className="mb-3 text-center">
+                <p className="font-script text-3xl text-white drop-shadow" style={{ fontFamily: "var(--font-script)" }}>
+                  it's live ✿
+                </p>
+                <p className="text-xs text-white/80">share the QR or the link — both open the gift</p>
+              </div>
+              <GiftQRCode
+                url={
+                  typeof window !== "undefined"
+                    ? `${window.location.origin}/gift/${publishedGift.slug}`
+                    : `/gift/${publishedGift.slug}`
+                }
+                recipientName={publishedGift.recipientName}
+              />
+              <div className="mt-3 flex justify-center gap-2">
+                <button
+                  onClick={() =>
+                    navigate({ to: "/gift/$giftId", params: { giftId: publishedGift.slug } })
+                  }
+                  className="rounded-full bg-white px-4 py-2 text-[11px] font-semibold text-foreground shadow-plush"
+                >
+                  open gift page →
+                </button>
+                <button
+                  onClick={() => setPublishedGift(null)}
+                  className="rounded-full bg-white/15 px-4 py-2 text-[11px] font-medium text-white ring-1 ring-white/30"
+                >
+                  keep editing
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     <div className="mx-auto grid w-full max-w-7xl gap-6 px-4 py-6 lg:grid-cols-[minmax(0,440px)_1fr] lg:gap-8 lg:px-8">
       {/* ─────────── Configuration ─────────── */}
       <div className="order-2 lg:order-1">
@@ -590,7 +640,9 @@ export function GiftEditor({ initial }: { initial: Gift }) {
           </div>
         </div>
       </div>
-    </div>
+      </div>
+      </div>
+    </>
   );
 }
 
