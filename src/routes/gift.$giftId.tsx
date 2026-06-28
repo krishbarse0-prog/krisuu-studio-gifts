@@ -5,6 +5,7 @@ import { GiftRenderer } from "@/components/GiftRenderer";
 import { PasswordGate } from "@/components/PasswordGate";
 import { CountdownGate } from "@/components/CountdownGate";
 import { ScratchCard } from "@/components/ScratchCard";
+import { GiftReactions } from "@/components/GiftReactions";
 import { getGift, type Gift } from "@/lib/gift-store";
 
 export const Route = createFileRoute("/gift/$giftId")({
@@ -73,6 +74,7 @@ function GiftPage() {
         <ScratchCard gift={gift}>
           <div className="relative">
             <GiftRenderer gift={gift} autoplay />
+            <GiftReactions giftId={gift.id} recipientName={gift.recipientName} />
             <div className="fixed bottom-4 right-4 z-30 flex flex-wrap justify-end gap-2">
               <button
                 onClick={whatsapp}
