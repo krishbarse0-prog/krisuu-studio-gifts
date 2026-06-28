@@ -641,6 +641,7 @@ export function GiftEditor({ initial }: { initial: Gift }) {
         </div>
       </div>
       </div>
+      </div>
     </>
   );
 }
