@@ -21,6 +21,7 @@ import type { Gift, GiftAnimation, GiftTheme } from "@/lib/gift-store";
 import { encodePassword, PALETTES, saveGift, setPrefs, THEME_GRADIENT } from "@/lib/gift-store";
 import { GiftRenderer } from "./GiftRenderer";
 import { VoiceRecorder } from "./VoiceNote";
+import { GiftQRCode } from "./GiftQRCode";
 
 const THEMES: { id: GiftTheme; label: string; mood: string }[] = [
   { id: "rose", label: "Rose", mood: "warm · romantic" },
@@ -44,6 +45,7 @@ export function GiftEditor({ initial }: { initial: Gift }) {
   const [saved, setSaved] = useState(false);
   const [dragOver, setDragOver] = useState(false);
   const [advancedOpen, setAdvancedOpen] = useState(false);
+  const [publishedGift, setPublishedGift] = useState<Gift | null>(null);
   const navigate = useNavigate();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -87,10 +89,7 @@ export function GiftEditor({ initial }: { initial: Gift }) {
   function publish() {
     const next = saveGift({ ...gift, status: "published" });
     setPrefs({ lastTheme: gift.theme, lastPalette: gift.palette });
-    setTimeout(
-      () => navigate({ to: "/gift/$giftId", params: { giftId: next.slug } }),
-      180,
-    );
+    setPublishedGift(next);
   }
 
   const filledCount =
