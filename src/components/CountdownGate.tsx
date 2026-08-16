@@ -14,16 +14,20 @@ function diff(target: number) {
 
 export function CountdownGate({ gift, children }: { gift: Gift; children: React.ReactNode }) {
   const target = gift.revealAt ?? 0;
-  const [now, setNow] = useState(() => Date.now());
+  const [now, setNow] = useState<number | null>(null);
   const [forceOpen, setForceOpen] = useState(false);
 
   useEffect(() => {
     if (!target) return;
+    setNow(Date.now());
     const t = setInterval(() => setNow(Date.now()), 1000);
     return () => clearInterval(t);
   }, [target]);
 
-  if (!target || now >= target || forceOpen) return <>{children}</>;
+  if (!target || forceOpen) return <>{children}</>;
+  if (now === null) return <div className="min-h-screen bg-[oklch(0.32_0.06_290)]" />;
+  if (now >= target) return <>{children}</>;
+
   const { d, h, m, s } = diff(target);
   const date = new Date(target);
 
